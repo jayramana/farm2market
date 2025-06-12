@@ -1,0 +1,10 @@
+| Feature                            | Description                                                                                  |
+| ---------------------------------- | -------------------------------------------------------------------------------------------- |
+| **Authentication & Authorization** | Sign-up, login (JWT tokens or sessions), and role-based access (farmer, consumer, retailer). |
+| **Product Listing & Search**       | Filter by name, category, price range, seller location. (Over)                                    |
+| **User Profile Management**        | Let users update their phone, location, role, etc.                                           |
+| **View My Orders**                 | Buyer sees all past orders, product info, seller info, and status.                           |
+| **Inventory Management**           | Sellers/farmers can update/delete their own products, and stock decreases after orders.      |
+
+
+
