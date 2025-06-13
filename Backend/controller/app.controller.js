@@ -110,6 +110,24 @@ const filterProduct = async (req, res) => {
   }
 };
 
+const searchProduct = async (req, res) => {
+  try {
+    const { prod_name } = req.body;
+
+    if (!prod_name) {
+      return res.status(400).json({message : "Fill the name of the product"})
+    }
+
+    const [ans] = await User.searchProduct(prod_name);
+
+    res.status(200).json({message : "Success", data:ans})
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ message: "Internal Server Error" });
+
+  }
+}
+
 const getParticularUOrder = async (user_id) => {
   try {
     const result = await User.getParticularTrans(user_id);
@@ -122,6 +140,7 @@ const getParticularUOrder = async (user_id) => {
 module.exports = {
   getAllProducts,
   getParticular,
+  searchProduct,
   addProduct,
   confirmOrder,
   filterProduct,

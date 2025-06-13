@@ -42,6 +42,7 @@ AND p.prod_name = ?
 AND p.prod_price <= ?;`,
     [user_loc, prod_name, prod_price]
   );
+const searchProduct = (prod_name) => db.query("SELECT p.user_id,u.user_name,p.prod_name,p.prod_price,p.prod_category,p.prod_quantity from product p inner join users u on p.user_id = u.user_id where p.prod_name = ? ", [prod_name]);
 const reduceContents = (quantity, p_id, u_id) =>
   db.query(
     "UPDATE PRODUCT SET prod_quantity = prod_quantity - ? WHERE prod_id = ? AND user_id = ? AND prod_quantity >= ?",
@@ -77,6 +78,7 @@ module.exports = {
   createUser,
   createProduct,
   getAllUsers,
+  searchProduct,
   getAllUserOrder,
   getAllProducts,
   getParticularProduct,
