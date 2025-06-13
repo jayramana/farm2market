@@ -2,7 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 
-const { getAllProducts, getParticular, addProduct, confirmOrder, filterProduct,getParticularUOrder } = require("../controller/app.controller.js");
+const { getAllProducts, getParticular, addProduct, filterProduct,confirmOrder, getParticularUOrder } = require("../controller/app.controller.js");
 
 
 router.get("/product/user/orders/:id", getParticularUOrder);
