@@ -54,24 +54,7 @@ const searchProduct = (prod_name) =>
     "SELECT p.user_id,u.user_name,p.prod_name,p.prod_price,p.prod_category,p.prod_quantity from product p inner join users u on p.user_id = u.user_id where p.prod_name = ? ",
     [prod_name]
   );
-const reduceContents = (quantity, p_id, u_id) =>
-  db.query(
-    "UPDATE PRODUCT SET prod_quantity = prod_quantity - ? WHERE prod_id = ? AND user_id = ? AND prod_quantity >= ?",
-    [quantity, p_id, u_id, quantity]
-  );
 
-const createTransactons = (
-  buyer_id,
-  seller_id,
-  prod_id,
-  quantity,
-  final_price,
-  transaction_status
-) =>
-  db.query(
-    "INSERT INTO TRANSACTIONS(buyer_id,seller_id,prod_id,quantity,final_price,transaction_status) VALUES(?, ?, ?, ?, ?, ?)",
-    [buyer_id, seller_id, prod_id, quantity, final_price, transaction_status]
-  );
 const getUserTrans = (user_id) =>
   db.query("SELECT * FROM TRANSACTIONS WHERE buyer_id = ?", [user_id]);
 
@@ -108,9 +91,7 @@ module.exports = {
   getAllUserOrder,
   getAllProducts,
   getParticularProduct,
-  createTransactons,
   filterProduct,
-  reduceContents,
   getUserTrans,
   getSellerTrans,
   getParticularSTrans,

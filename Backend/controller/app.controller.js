@@ -62,42 +62,6 @@ const addProduct = async (req, res) => {
   }
 };
 
-// const confirmOrder = async (req, res) => {
-//   const {
-//     buyer_id,
-//     seller_id,
-//     prod_id,
-//     quantity,
-//     final_price,
-//     transaction_status,
-//   } = req.body;
-//   try {
-//     if (
-//       !buyer_id ||
-//       !seller_id ||
-//       !prod_id ||
-//       !quantity ||
-//       !final_price
-//     ) {
-//       return res.status(400).json({ message: "Fill all fields" });
-//     }
-//     await User.reduceContents(quantity, prod_id, seller_id);
-//     const [order] = await User.createTransactons(
-//       buyer_id,
-//       seller_id,
-//       prod_id,
-//       quantity,
-//       final_price,
-//       transaction_status
-//     );
-
-//     res.status(200).json({ message: "Success", data: order });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: "Internal Server Error" });
-//   }
-// };
-
 const filterProduct = async (req, res) => {
   try {
     const { user_loc, prod_name, prod_price } = req.body;
