@@ -2,10 +2,11 @@ const express = require("express");
 
 const router = express.Router();
 
-const { getAllProducts, getParticular, addProduct, filterProduct,confirmOrder, getParticularUOrder,searchProduct } = require("../controller/app.controller.js");
+const { getAllProducts, getParticular, addProduct, filterProduct, getUserOrder,searchProduct,getSellerSales } = require("../controller/app.controller.js");
 
 
-router.get("/product/user/orders/:id", getParticularUOrder);
+router.get("/product/user/orders/:id", getUserOrder);
+router.get("/product/user/sales/:id", getSellerSales);
 
 
 
@@ -18,7 +19,7 @@ router.get("/product/search", searchProduct);
 
 
 //Needs work
-router.post("/product/order", confirmOrder);
+// router.post("/product/order", confirmOrder);
 
 
 module.exports = router;

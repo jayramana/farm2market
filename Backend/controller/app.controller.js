@@ -62,41 +62,41 @@ const addProduct = async (req, res) => {
   }
 };
 
-const confirmOrder = async (req, res) => {
-  const {
-    buyer_id,
-    seller_id,
-    prod_id,
-    quantity,
-    final_price,
-    transaction_status,
-  } = req.body;
-  try {
-    if (
-      !buyer_id ||
-      !seller_id ||
-      !prod_id ||
-      !quantity ||
-      !final_price 
-    ) {
-      return res.status(400).json({ message: "Fill all fields" });
-    }
-    await User.reduceContents(quantity, prod_id, seller_id);
-    const [order] = await User.createTransactons(
-      buyer_id,
-      seller_id,
-      prod_id,
-      quantity,
-      final_price,
-      transaction_status
-    );
+// const confirmOrder = async (req, res) => {
+//   const {
+//     buyer_id,
+//     seller_id,
+//     prod_id,
+//     quantity,
+//     final_price,
+//     transaction_status,
+//   } = req.body;
+//   try {
+//     if (
+//       !buyer_id ||
+//       !seller_id ||
+//       !prod_id ||
+//       !quantity ||
+//       !final_price
+//     ) {
+//       return res.status(400).json({ message: "Fill all fields" });
+//     }
+//     await User.reduceContents(quantity, prod_id, seller_id);
+//     const [order] = await User.createTransactons(
+//       buyer_id,
+//       seller_id,
+//       prod_id,
+//       quantity,
+//       final_price,
+//       transaction_status
+//     );
 
-    res.status(200).json({ message: "Success", data: order });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
+//     res.status(200).json({ message: "Success", data: order });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
 
 const filterProduct = async (req, res) => {
   try {
@@ -115,23 +115,40 @@ const searchProduct = async (req, res) => {
     const { prod_name } = req.body;
 
     if (!prod_name) {
-      return res.status(400).json({message : "Fill the name of the product"})
+      return res.status(400).json({ message: "Fill the name of the product" });
     }
 
     const [ans] = await User.searchProduct(prod_name);
 
-    res.status(200).json({message : "Success", data:ans})
+    res.status(200).json({ message: "Success", data: ans });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });
-
   }
-}
+};
 
-const getParticularUOrder = async (user_id) => {
+const getUserOrder = async (req, res) => {
   try {
-    const result = await User.getParticularTrans(user_id);
-    res.status(200).json({ message: "Success", data: result });
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) return res.status();
+    const [result] = await User.getUserTrans(id);
+    console.log(result);
+    return res.status(200).json({ message: "Success", data: result });
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
+};
+
+const getSellerSales = async (req, res) => {
+  try {
+    const user_id = parseInt(req.params.id, 10);
+
+    if (Number.isNaN(user_id))
+      return res.status(404).json({ message: "User Not Found !" });
+
+    const [result] = await User.getSellerTrans(user_id);
+
+    return res.status(200).json({ success: true, data: result });
   } catch (error) {
     return res.status(500).json({ message: error });
   }
@@ -142,7 +159,7 @@ module.exports = {
   getParticular,
   searchProduct,
   addProduct,
-  confirmOrder,
   filterProduct,
-  getParticularUOrder,
+  getUserOrder,
+  getSellerSales,
 };
