@@ -1,5 +1,6 @@
 const User = require("../model/app.model.js");
 
+//Get All Products in stock
 const getAllProducts = async (req, res) => {
   try {
     const [products] = await User.getAllProducts();
@@ -11,6 +12,7 @@ const getAllProducts = async (req, res) => {
   }
 };
 
+// Get a Particular item with a searched name
 const getParticular = async (req, res) => {
   try {
     const { prod_name } = req.body;
@@ -19,10 +21,11 @@ const getParticular = async (req, res) => {
 
     res.status(200).json({ message: "Success", data: prod });
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ err: "Internal Server Error" });
   }
 };
 
+// Add products to DB(Requires role handling)
 const addProduct = async (req, res) => {
   try {
     const {
@@ -58,10 +61,11 @@ const addProduct = async (req, res) => {
 
     res.status(200).json({ message: "Success", data: addProd });
   } catch (error) {
-    res.status(500).json({ message: error });
+    res.status(500).json({ err: error });
   }
 };
 
+// Advanced Filtering of Products
 const filterProduct = async (req, res) => {
   try {
     const { user_loc, prod_name, prod_price } = req.body;
@@ -70,7 +74,7 @@ const filterProduct = async (req, res) => {
 
     res.status(200).json({ message: "Success", data: prods });
   } catch (error) {
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ err: "Internal Server Error" });
   }
 };
 
@@ -87,10 +91,11 @@ const searchProduct = async (req, res) => {
     res.status(200).json({ message: "Success", data: ans });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ err: "Internal Server Error" });
   }
 };
 
+// Get a Particular User's Order
 const getUserOrder = async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
@@ -99,10 +104,11 @@ const getUserOrder = async (req, res) => {
     console.log(result);
     return res.status(200).json({ message: "Success", data: result });
   } catch (error) {
-    return res.status(500).json({ message: error });
+    return res.status(500).json({ err: error });
   }
 };
 
+//Get the sales of sellers
 const getSellerSales = async (req, res) => {
   try {
     const user_id = parseInt(req.params.id, 10);
@@ -114,7 +120,67 @@ const getSellerSales = async (req, res) => {
 
     return res.status(200).json({ success: true, data: result });
   } catch (error) {
-    return res.status(500).json({ message: error });
+    return res.status(500).json({ err: error });
+  }
+};
+
+// Get total selling price of the retailers
+const getFarmerstats = async (req, res) => {
+  try {
+    const _id = parseInt(req.params.id, 10);
+
+    if (Number.isNaN(_id))
+      return res.status(404).json({ message: "User Not Found!" });
+
+    const [fetchData] = await User.getFarmerStats(_id);
+
+    return res.status(200).json({ message: "Success", data: fetchData });
+  } catch (error) {
+    return res.status(500).json({ message: "Failiure", err: error });
+  }
+};
+
+//Get total buying of users
+const getNormstats = async (req, res) => {
+  try {
+    const _id = parseInt(req.params.id, 10);
+
+    if (Number.isNaN(_id))
+      return res.status(404).json({ message: "User not Found!!" });
+
+    const [fetchData] = await User.getNormieStats(_id);
+
+    return res.status(200).json({ message: "Success", data: fetchData });
+  } catch (error) {
+    return res.status(500).json({ message: "Failiure", err: error });
+  }
+};
+
+//Add an order to the transaction table
+const newOrder = async (req, res) => {
+  try {
+    const buyer_id = parseInt(req.body.buyer_id, 10);
+    const seller_id = parseInt(req.body.seller_id, 10);
+    const prod_id = parseInt(req.body.prod_id, 10);
+    const prod_quantity = parseInt(req.body.prod_quantity, 10);
+
+    if ([buyer_id, seller_id, prod_id, prod_quantity].some((n) => Number.isNaN(n))) {
+      return res.status(400).json({ message: "Invalid parameters" });
+    }
+
+    const fetchData = await User.addOrder(
+      buyer_id,
+      seller_id,
+      prod_id,
+      prod_quantity
+    );
+    if (!fetchData.success)
+      return res
+        .status(400)
+        .json({ message: "Failiure", message: fetchData.message });
+    return res.status(200).json({ message: "Success" });
+  } catch (error) {
+    return res.status(500).json({ message: "Failiure", err: error.message });
   }
 };
 
@@ -126,4 +192,7 @@ module.exports = {
   filterProduct,
   getUserOrder,
   getSellerSales,
+  getFarmerstats,
+  getNormstats,
+  newOrder
 };
