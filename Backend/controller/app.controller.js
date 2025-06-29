@@ -61,7 +61,7 @@ const addProduct = async (req, res) => {
 
     res.status(200).json({ message: "Success", data: addProd });
   } catch (error) {
-    res.status(500).json({ err: error });
+    res.status(500).json({ err: error.message });
   }
 };
 
@@ -101,7 +101,6 @@ const getUserOrder = async (req, res) => {
     const id = parseInt(req.params.id, 10);
     if (Number.isNaN(id)) return res.status();
     const [result] = await User.getUserTrans(id);
-    console.log(result);
     return res.status(200).json({ message: "Success", data: result });
   } catch (error) {
     return res.status(500).json({ err: error });

@@ -16,25 +16,32 @@ const getAllUsers = () => db.query("SELECT * FROM USERS");
 const getAllUserOrder = (user_id) =>
   db.query("SELECT * FROM TRANSACTIONS WHERE buyer_id = ? ", [user_id]);
 
-const createProduct = (
-  user_id,
-  prod_name,
-  prod_category,
-  prod_price,
-  prod_quantity,
-  prod_description
-) =>
-  db.query(
-    "INSERT INTO PRODUCT(user_id,prod_name,prod_category,prod_price,prod_quantity,prod_description)VALUES(?,?,?,?,?,?)",
-    [
-      user_id,
-      prod_name,
-      prod_category,
-      prod_price,
-      prod_quantity,
-      prod_description,
-    ]
-  );
+const createProduct = async (user_id, prod_name, prod_category, prod_price, prod_quantity, prod_description) => {
+  try {
+    const [rows] = await db.query("SELECT user_role FROM users WHERE user_id = ?", [user_id]);
+
+    if (rows.length === 0) {
+      throw new Error("User not found.");
+    }
+
+    const role = rows[0].user_role;
+
+    if (role === 'farmer') {
+      await db.query(
+        "INSERT INTO PRODUCT (user_id,prod_name, prod_category, prod_price, prod_quantity, prod_description) VALUES (?, ?, ?, ?, ?, ?);",
+        [user_id, prod_name, prod_category, prod_price, prod_quantity, prod_description]
+      );
+      console.log("Product created successfully.");
+    } else {
+      throw new Error("Unauthorized: Only farmers can create products.");
+    }
+
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+  
 const getAllProducts = () => db.query("SELECT * FROM PRODUCT");
 const getParticularProduct = (prod_name) =>
   db.query("Select * FROM PRODUCT WHERE prod_name = ? ", [prod_name]);
