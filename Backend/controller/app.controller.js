@@ -124,7 +124,7 @@ const getSellerSales = async (req, res) => {
   }
 };
 
-// Get total selling price of the retailers
+// Get total selling price of the farmers
 const getFarmerstats = async (req, res) => {
   try {
     const _id = parseInt(req.params.id, 10);
