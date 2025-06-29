@@ -1,0 +1,27 @@
+services:
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: "sundaramg@123"
+      MYSQL_DATABASE: farm2market
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+
+      interval: 5s
+      retries: 10
+
+  app:
+    build: .
+    image: zephyrus/f2m:v1
+    ports:
+      - "6001:3000"
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: "sundaramg@123"
+      DB_NAME: farm2market
+    depends_on:
+      db:
+        condition: service_healthy

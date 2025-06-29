@@ -163,7 +163,9 @@ const newOrder = async (req, res) => {
     const prod_id = parseInt(req.body.prod_id, 10);
     const prod_quantity = parseInt(req.body.prod_quantity, 10);
 
-    if ([buyer_id, seller_id, prod_id, prod_quantity].some((n) => Number.isNaN(n))) {
+    if (
+      [buyer_id, seller_id, prod_id, prod_quantity].some((n) => Number.isNaN(n))
+    ) {
       return res.status(400).json({ message: "Invalid parameters" });
     }
 
@@ -183,6 +185,21 @@ const newOrder = async (req, res) => {
   }
 };
 
+const editProdstats = async (req, res) => {
+  try {
+    const user_id = parseInt(req.body.user_id);
+    const prod_id = parseInt(req.body.prod_id);
+    const prod_price = parseInt(req.body.prod_price);
+    const prod_quantity = parseInt(req.body.prod_quantity);
+
+    await User.editProduct(user_id, prod_id, prod_price, prod_quantity);
+
+    return res.status(200).json({ message: "success" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getAllProducts,
   getParticular,
@@ -193,5 +210,6 @@ module.exports = {
   getSellerSales,
   getFarmerstats,
   getNormstats,
-  newOrder
+  newOrder,
+  editProdstats
 };

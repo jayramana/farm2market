@@ -141,6 +141,19 @@ const addOrder = async (buy_id, sell_id, pid, quantity) => {
   return { success: true };
 };
 
+//Edit Product quantity & product price
+const editProduct = (user_id, prod_id, prod_price, prod_quantity) => {
+  
+  const role = db.query("SELECT user_role from users where user_id = ?", [user_id]);
+  
+  if (role == 'farmer') {
+    db.query("UPDATE product SET prod_price = ? AND prod_quantity = ? WHERE prod_id = ?", [prod_price, prod_quantity, prod_id]);
+  }
+  else {
+    throw new Error("Unauthorized!!");
+  }
+}
+
 module.exports = {
   createUser,
   createProduct,
@@ -156,4 +169,5 @@ module.exports = {
   getFarmerStats,
   getNormieStats,
   addOrder,
+  editProduct
 };

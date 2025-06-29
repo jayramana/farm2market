@@ -1,23 +1,28 @@
-const mysql = require("mysql2");
-
+const mysql = require("mysql2/promise");
 require("dotenv").config();
 
-const connectDB = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
-})
+const dbConfig = {
+  host: process.env.DB_HOST || "db",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "sundaramg@123",
+  database: process.env.DB_NAME || "farm2market",
+  port: process.env.DB_PORT || 3306,
+};
 
-connectDB.connect((err) => {
-    if (err) {
-        throw err;
-    }
-    console.log("Connected to dha database");
-})
+let connection;
 
-const db = connectDB.promise();
+async function connectWithRetry() {
+  try {
+    connection = await mysql.createConnection(dbConfig);
+    console.log("✅ Connected to dha database");
+  } catch (err) {
+    console.error("❌ Database connection failed, retrying in 5s...", err.message);
+    setTimeout(connectWithRetry, 5000);
+  }
+}
 
+connectWithRetry();
 
-module.exports = db;
+module.exports = {
+  getConnection: () => connection,
+};
