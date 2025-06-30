@@ -1,52 +1,108 @@
 const db = require("../config/db.js");
 
-const createUser = (
+const createUser = async (
   user_name,
   user_email,
   user_enpass,
   user_role,
   user_phone,
   user_loc
-) =>
-  db.query(
+) => {
+  const [rows] = await db.query(
     "INSERT INTO USERS(user_name,user_email,user_enpass,user_role,user_phone,user_loc)VALUES(?,?,?,?,?,?)",
     [user_name, user_email, user_enpass, user_role, user_phone, user_loc]
   );
-const getAllUsers = () => db.query("SELECT * FROM USERS");
-const getAllUserOrder = (user_id) =>
-  db.query("SELECT * FROM TRANSACTIONS WHERE buyer_id = ? ", [user_id]);
+  if (rows.affectedRows == 0)
+    throw new Error("Error occured while creating a user!");
+  return { success: true };
+};
+const getAllUsers = async () => {
+  const [rows] = await db.query("SELECT * FROM USERS");
+  if (rows.length == 0) throw new Error("No data Found!");
+  return { success: true };
+};
+const getAllUserOrder = async (user_id) => {
+  const [rows] = await db.query(
+    "SELECT * FROM TRANSACTIONS WHERE buyer_id = ? ",
+    [user_id]
+  );
+  if (rows.length == 0) throw new Error("Orders are Empty!");
+};
 
-const createProduct = async (user_id, prod_name, prod_category, prod_price, prod_quantity, prod_description) => {
+const createProduct = async (
+  user_id,
+  prod_name,
+  prod_category,
+  prod_price,
+  prod_quantity,
+  prod_description
+) => {
   try {
-    const [rows] = await db.query("SELECT user_role FROM users WHERE user_id = ?", [user_id]);
+    const [rows] = await db.query(
+      "SELECT user_role FROM users WHERE user_id = ?",
+      [user_id]
+    );
 
     if (rows.length === 0) {
       throw new Error("User not found.");
     }
 
     const role = rows[0].user_role;
+    const [prev_check] = await db.query(
+      "SELECT * from PRODUCT WHERE prod_name = ? AND user_id = ?",
+      [prod_name, user_id]
+    );
 
-    if (role === 'farmer') {
-      await db.query(
-        "INSERT INTO PRODUCT (user_id,prod_name, prod_category, prod_price, prod_quantity, prod_description) VALUES (?, ?, ?, ?, ?, ?);",
-        [user_id, prod_name, prod_category, prod_price, prod_quantity, prod_description]
-      );
-      console.log("Product created successfully.");
+    if (role === "farmer") {
+      if (prev_check.length == 0) {
+        await db.query(
+          "INSERT INTO PRODUCT (user_id,prod_name, prod_category, prod_price, prod_quantity, prod_description) VALUES (?, ?, ?, ?, ?, ?);",
+          [
+            user_id,
+            prod_name,
+            prod_category,
+            prod_price,
+            prod_quantity,
+            prod_description,
+          ]
+        );
+        console.log("Product created successfully.");
+      } else {
+        await db.query(
+          "UPDATE PRODUCT SET prod_quantity = ?, prod_price = ?, prod_description = ? WHERE user_id = ? AND prod_name = ?",
+          [
+            prev_check[0].prod_quantity + prod_quantity,
+            prod_price,
+            prod_description,
+            user_id,
+            prod_name,
+          ]
+        );
+      }
     } else {
       throw new Error("Unauthorized: Only farmers can create products.");
     }
-
   } catch (err) {
     console.error(err);
     throw err;
   }
-}
-  
-const getAllProducts = () => db.query("SELECT * FROM PRODUCT");
-const getParticularProduct = (prod_name) =>
-  db.query("Select * FROM PRODUCT WHERE prod_name = ? ", [prod_name]);
-const filterProduct = (user_loc, prod_name, prod_price) =>
-  db.query(
+};
+
+const getAllProducts = async () => {
+  const [rows] = await db.query("SELECT * FROM PRODUCT");
+  if (rows.length == 0) throw new Error("No Products Found!");
+
+  return { success: true, data: rows };
+};
+const getParticularProduct = async (prod_name) => {
+  const [rows] = await db.query("Select * FROM PRODUCT WHERE prod_name = ? ", [
+    prod_name,
+  ]);
+  if (rows.length == 0) throw new Error("Product not found!!");
+  return { success: true, data: rows };
+};
+const filterProduct = async (user_loc, prod_name, prod_price) => {
+  const [rows] = await db.query(
     `SELECT u.user_loc,p.prod_name,p.prod_price
 from product p
 inner join Users u
@@ -56,17 +112,26 @@ AND p.prod_name = ?
 AND p.prod_price <= ?;`,
     [user_loc, prod_name, prod_price]
   );
-const searchProduct = (prod_name) =>
+  if (rows.length == 0) throw new Error("Products not Found!!");
+  return { success: true, data: rows };
+};
+
+//Why ??
+const searchProduct = async (prod_name) => {
   db.query(
     "SELECT p.user_id,u.user_name,p.prod_name,p.prod_price,p.prod_category,p.prod_quantity from product p inner join users u on p.user_id = u.user_id where p.prod_name = ? ",
     [prod_name]
   );
+};
 
-const getUserTrans = (user_id) =>
-  db.query("SELECT * FROM TRANSACTIONS WHERE buyer_id = ?", [user_id]);
+const getUserTrans = async (user_id) => {
+  const [rows] = await db.query("SELECT * FROM TRANSACTIONS WHERE buyer_id = ?", [user_id]);
+  if (rows.length == 0) throw new Error("No transactions Found !! ");
+  return { success: true, data: rows };
+};
 
-const getSellerTrans = (user_id) =>
-  db.query(
+const getSellerTrans = async(user_id) => {
+  const [rows] = await db.query(
     `SELECT
        p.prod_id,
        p.prod_name,
@@ -77,7 +142,12 @@ const getSellerTrans = (user_id) =>
        ON t.prod_id = p.prod_id
      WHERE t.seller_id = ?`,
     [user_id]
+
+    
   );
+  if (rows.length == 0) throw new Error("No Transactions Found !! ");
+  return { success: true, data: rows };
+}
 
 const getParticularSTrans = (user_id) =>
   db.query(
@@ -142,17 +212,40 @@ const addOrder = async (buy_id, sell_id, pid, quantity) => {
 };
 
 //Edit Product quantity & product price
-const editProduct = (user_id, prod_id, prod_price, prod_quantity) => {
-  
-  const role = db.query("SELECT user_role from users where user_id = ?", [user_id]);
-  
-  if (role == 'farmer') {
-    db.query("UPDATE product SET prod_price = ? AND prod_quantity = ? WHERE prod_id = ?", [prod_price, prod_quantity, prod_id]);
+const editProduct = async (user_id, prod_id, prod_price, prod_quantity) => {
+  const [rows] = await db.query(
+    "SELECT user_role FROM users WHERE user_id = ?",
+    [user_id]
+  );
+
+  if (rows.length === 0) {
+    throw new Error("User not found");
   }
-  else {
+
+  const role = rows[0].user_role;
+
+  if (role === "farmer") {
+    const [result] = await db.query(
+      "UPDATE product SET prod_price = ?, prod_quantity = ? WHERE prod_id = ? AND user_id = ?",
+      [prod_price, prod_quantity, prod_id, user_id]
+    );
+
+    if (result.affectedRows === 0) {
+      throw new Error(
+        "Product not found or you do not have permission to edit this product"
+      );
+    }
+
+    const [updatedProductRows] = await db.query(
+      "SELECT * FROM product WHERE prod_id = ? AND user_id = ?",
+      [prod_id, user_id]
+    );
+
+    return updatedProductRows[0];
+  } else {
     throw new Error("Unauthorized!!");
   }
-}
+};
 
 module.exports = {
   createUser,
@@ -169,5 +262,5 @@ module.exports = {
   getFarmerStats,
   getNormieStats,
   addOrder,
-  editProduct
+  editProduct,
 };

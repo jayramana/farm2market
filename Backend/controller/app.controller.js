@@ -189,7 +189,7 @@ const editProdstats = async (req, res) => {
   try {
     const user_id = parseInt(req.body.user_id);
     const prod_id = parseInt(req.body.prod_id);
-    const prod_price = parseInt(req.body.prod_price);
+    const prod_price = parseFloat(req.body.prod_price);
     const prod_quantity = parseInt(req.body.prod_quantity);
 
     await User.editProduct(user_id, prod_id, prod_price, prod_quantity);

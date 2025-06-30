@@ -13,6 +13,7 @@ const {
   getFarmerstats,
   getNormstats,
   newOrder,
+  editProdstats
 } = require("../controller/app.controller.js");
 
 router.get("/health", (req, res) => {
@@ -31,6 +32,7 @@ router.get("/product/search", searchProduct);
 router.get("/product/user/orders/:id", getUserOrder); //Ok
 
 router.post("/product/add", addProduct); //Ok
+router.put("/product/edit",editProdstats) // Ok
 
 router.post("/product/newOrder", newOrder); //Ok
 
