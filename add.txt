@@ -10,5 +10,5 @@
 
 1. Authentication
 2. Add total Sales/Purchases for a seller and Buyer/Retailer - Over
-3. Automatic updation of stock after purchase for Sellers using Transactions
-4. Profile & Inventory Management - Edit product update quantity if prod already available for a particular user_id
+3. Automatic updation of stock after purchase for Sellers using Transactions - Over
+4. Profile & Inventory Management - Inventory management over
