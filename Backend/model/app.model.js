@@ -118,57 +118,92 @@ AND p.prod_price <= ?;`,
 
 //Why ??
 const searchProduct = async (prod_name) => {
-  db.query(
-    "SELECT p.user_id,u.user_name,p.prod_name,p.prod_price,p.prod_category,p.prod_quantity from product p inner join users u on p.user_id = u.user_id where p.prod_name = ? ",
-    [prod_name]
-  );
+  try {
+    const [rows] = db.query(
+      "SELECT p.user_id,u.user_name,p.prod_name,p.prod_price,p.prod_category,p.prod_quantity from product p inner join users u on p.user_id = u.user_id where p.prod_name = ? ",
+      [prod_name]
+    );
+
+    if (rows.length == 0) throw new Error("Product not found !");
+    return { success: true, data: rows[0] };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
 };
 
 const getUserTrans = async (user_id) => {
-  const [rows] = await db.query("SELECT * FROM TRANSACTIONS WHERE buyer_id = ?", [user_id]);
-  if (rows.length == 0) throw new Error("No transactions Found !! ");
-  return { success: true, data: rows };
+  try {
+    const [rows] = await db.query(
+      "SELECT * FROM TRANSACTIONS WHERE buyer_id = ?",
+      [user_id]
+    );
+    if (rows.length == 0) throw new Error("No transactions Found !! ");
+    return { success: true, data: rows };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
 };
 
-const getSellerTrans = async(user_id) => {
-  const [rows] = await db.query(
-    `SELECT
-       p.prod_id,
-       p.prod_name,
-       t.quantity,
-       t.final_price
-     FROM Transactions t
-     INNER JOIN Product p
-       ON t.prod_id = p.prod_id
-     WHERE t.seller_id = ?`,
-    [user_id]
+const getSellerTrans = async (user_id) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT
+         p.prod_id,
+         p.prod_name,
+         t.quantity,
+         t.final_price
+       FROM Transactions t
+       INNER JOIN Product p
+         ON t.prod_id = p.prod_id
+       WHERE t.seller_id = ?`,
+      [user_id]
+    );
+    if (rows.length == 0) throw new Error("No Transactions Found !! ");
+    return { success: true, data: rows[0] };
+  } catch {
+    err;
+  }
+  {
+    return { success: false, message: err.message };
+  }
+};
 
+const getParticularSTrans = async (user_id) => {
+  try {
+    const [rows] = await db.query(
+      `
+      SELECT p.prod_name,t.quantity,t.final_price,t.transaction_status,t.transaction_date from transactions t
+      INNER JOIN product p
+      on p.prod_id = t.prod_id
+      where t.seller_id = ?
+      `,
+      [user_id]
+    );
+
+    if (rows.length === 0) throw new Error("No Trabsactions Found !!");
+    return {success : true, data : rows[0]}
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+};
+
+const getFarmerStats = async (user_id) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT u.user_name,u.user_role,SUM(t.quantity) AS tot_quantity,SUM(t.final_price) AS tot_price
+  FROM TRANSACTIONS t
+  INNER JOIN users u
+  on  t.seller_id = u.user_id WHERE u.user_id = ?  AND u.user_role = 'farmer'
+  GROUP BY u.user_name,u.user_role;`,
+      [user_id]
+    );
+    if (rows.length === 0) throw new Error("No Data Found !!");
+    return { success: true, data: rows[0] };
     
-  );
-  if (rows.length == 0) throw new Error("No Transactions Found !! ");
-  return { success: true, data: rows };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
 }
-
-const getParticularSTrans = (user_id) =>
-  db.query(
-    `
-    SELECT p.prod_name,t.quantity,t.final_price,t.transaction_status,t.transaction_date from transactions t
-    INNER JOIN product p
-    on p.prod_id = t.prod_id
-    where t.seller_id = ?
-    `,
-    [user_id]
-  );
-
-const getFarmerStats = (user_id) =>
-  db.query(
-    `SELECT u.user_name,u.user_role,SUM(t.quantity) AS tot_quantity,SUM(t.final_price) AS tot_price
-FROM TRANSACTIONS t
-INNER JOIN users u
-on  t.seller_id = u.user_id WHERE u.user_id = ?  AND u.user_role = 'farmer'
-GROUP BY u.user_name,u.user_role;`,
-    [user_id]
-  );
 
 const getNormieStats = (user_id) =>
   db.query(

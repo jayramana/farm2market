@@ -17,7 +17,7 @@ const {
 } = require("../controller/app.controller.js");
 
 router.get("/health", (req, res) => {
-  res.send("Backen is running and mounted !");
+  res.send("Backend is running!");
 });
 
 router.get("/product/user/orderStats/:id", getNormstats); //Ok
