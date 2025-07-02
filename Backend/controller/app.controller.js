@@ -3,10 +3,10 @@ const User = require("../model/app.model.js");
 //Get All Products in stock
 const getAllProducts = async (req, res) => {
   try {
-    const [products] = await User.getAllProducts();
+    const [fetchData] = await User.getAllProducts();
     res
       .status(200)
-      .json({ message: "Products Successfully retrieved", data: products });
+      .json({ message: "Products Successfully retrieved", data: fetchData });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
@@ -17,9 +17,9 @@ const getParticular = async (req, res) => {
   try {
     const { prod_name } = req.body;
 
-    const [prod] = await User.getParticularProduct(prod_name);
+    const [fetchData] = await User.getParticularProduct(prod_name);
 
-    res.status(200).json({ message: "Success", data: prod });
+    res.status(200).json({ message: "Success", data:fetchData });
   } catch (error) {
     res.status(500).json({ err: "Internal Server Error" });
   }
@@ -50,7 +50,7 @@ const addProduct = async (req, res) => {
         .json({ message: "Fill all the fields before submitting" });
     }
 
-    const addProd = await User.createProduct(
+    const [addProd] = await User.createProduct(
       user_id,
       prod_name,
       prod_category,
@@ -70,9 +70,9 @@ const filterProduct = async (req, res) => {
   try {
     const { user_loc, prod_name, prod_price } = req.body;
     const newPrice = parseFloat(prod_price);
-    const [prods] = await User.filterProduct(user_loc, prod_name, newPrice);
+    const [fetchData] = await User.filterProduct(user_loc, prod_name, newPrice);
 
-    res.status(200).json({ message: "Success", data: prods });
+    res.status(200).json({ message: "Success", data: fetchData });
   } catch (error) {
     return res.status(500).json({ err: "Internal Server Error" });
   }
@@ -86,9 +86,9 @@ const searchProduct = async (req, res) => {
       return res.status(400).json({ message: "Fill the name of the product" });
     }
 
-    const [ans] = await User.searchProduct(prod_name);
+    const [fetchData] = await User.searchProduct(prod_name);
 
-    res.status(200).json({ message: "Success", data: ans });
+    res.status(200).json({ message: "Success", data: fetchData });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ err: "Internal Server Error" });
@@ -103,7 +103,7 @@ const getUserOrder = async (req, res) => {
     const [result] = await User.getUserTrans(id);
     return res.status(200).json({ message: "Success", data: result });
   } catch (error) {
-    return res.status(500).json({ err: error });
+    return res.status(500).json({ err: error.message });
   }
 };
 
@@ -115,11 +115,11 @@ const getSellerSales = async (req, res) => {
     if (Number.isNaN(user_id))
       return res.status(404).json({ message: "User Not Found !" });
 
-    const [result] = await User.getSellerTrans(user_id);
+    const [fetchData] = await User.getSellerTrans(user_id);
 
-    return res.status(200).json({ success: true, data: result });
+    return res.status(200).json({ success: true, data: fetchData });
   } catch (error) {
-    return res.status(500).json({ err: error });
+    return res.status(500).json({ err: error.message });
   }
 };
 
@@ -135,7 +135,7 @@ const getFarmerstats = async (req, res) => {
 
     return res.status(200).json({ message: "Success", data: fetchData });
   } catch (error) {
-    return res.status(500).json({ message: "Failiure", err: error });
+    return res.status(500).json({ message: "Failiure", err: error.message });
   }
 };
 

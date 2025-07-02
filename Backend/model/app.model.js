@@ -205,45 +205,57 @@ const getFarmerStats = async (user_id) => {
   }
 }
 
-const getNormieStats = (user_id) =>
-  db.query(
-    `SELECT u.user_name,u.user_role,SUM(t.quantity) AS tot_quantity, SUM(t.final_price) AS final_price
-FROM transactions t
-INNER JOIN users u
-ON u.user_id = t.buyer_id
-WHERE u.user_role = 'consumer' AND u.user_id = ?
-GROUP BY u.user_name,u.user_role;`,
-    [user_id]
-  );
-
+const getNormieStats = async (user_id) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT u.user_name,u.user_role,SUM(t.quantity) AS tot_quantity, SUM(t.final_price) AS final_price
+  FROM transactions t
+  INNER JOIN users u
+  ON u.user_id = t.buyer_id
+  WHERE u.user_role = 'consumer' AND u.user_id = ?
+  GROUP BY u.user_name,u.user_role;`,
+      [user_id]
+    );
+    if (rows.length === 0) throw new Error("No User Found !!");
+    return {success : true, data : rows[0]}
+    
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+}
 const addOrder = async (buy_id, sell_id, pid, quantity) => {
-  const [rows] = await db.query(
-    "SELECT prod_quantity from product where prod_id = ?",
-    [pid]
-  );
-
-  const [rows1] = await db.query(
-    "SELECT prod_price from product where prod_id = ? ",
-    [pid]
-  );
-
-  const curr_quantity = rows[0]?.prod_quantity || 0;
-  const curr_price = rows1[0]?.prod_price || 0.0;
-  if (curr_quantity < quantity) {
-    return { success: false, message: "Insufficient stock" };
-  }
-  if (curr_quantity >= quantity) {
-    await db.query(
-      "INSERT INTO transactions(buyer_id,seller_id,prod_id,quantity,prod_price,final_price)VALUES(?,?,?,?,?,?)",
-      [buy_id, sell_id, pid, quantity, curr_price, quantity * curr_price]
+  try {
+    const [rows] = await db.query(
+      "SELECT prod_quantity from product where prod_id = ?",
+      [pid]
     );
-
-    await db.query(
-      `UPDATE product set prod_quantity = prod_quantity - ? where prod_id = ?`,
-      [quantity, pid]
+  
+    const [rows1] = await db.query(
+      "SELECT prod_price from product where prod_id = ? ",
+      [pid]
     );
+  
+    const curr_quantity = rows[0]?.prod_quantity || 0;
+    const curr_price = rows1[0]?.prod_price || 0.0;
+    if (curr_quantity < quantity) {
+      return { success: false, message: "Insufficient stock" };
+    }
+    if (curr_quantity >= quantity) {
+      await db.query(
+        "INSERT INTO transactions(buyer_id,seller_id,prod_id,quantity,prod_price,final_price)VALUES(?,?,?,?,?,?)",
+        [buy_id, sell_id, pid, quantity, curr_price, quantity * curr_price]
+      );
+  
+      await db.query(
+        `UPDATE product set prod_quantity = prod_quantity - ? where prod_id = ?`,
+        [quantity, pid]
+      );
+    }
+    return { success: true };
+    
+  } catch (err) {
+    return { success: false };
   }
-  return { success: true };
 };
 
 //Edit Product quantity & product price
