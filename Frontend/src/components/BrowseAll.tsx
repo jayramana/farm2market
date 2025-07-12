@@ -2,7 +2,7 @@ import { useState,useEffect } from "react";
 import axios from "axios";
 import { useFtm } from "../store/useFtm";
 
-const Browse = () => {
+const BrowseAll = () => {
   const [search, setSearch] = useState<string>("");
   const [pricefilter, setPricefilter] = useState<number>();
   const [location, setLocation] = useState<string>();
@@ -60,4 +60,4 @@ const Browse = () => {
   );
 };
 
-export default Browse;
+export default BrowseAll;

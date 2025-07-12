@@ -2,14 +2,14 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Order from "./components/Order";
 import Profile from "./components/Profile";
-import Browse from "./components/Browse";
+import BrowseAll from "./components/BrowseAll";
 function App() {
   return (
     <main>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/orders" element={<Order />} />
-        <Route path="/browse" element={<Browse />} />
+        <Route path="/browse" element={<BrowseAll />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
     </main>
