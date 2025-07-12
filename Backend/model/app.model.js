@@ -94,13 +94,6 @@ const getAllProducts = async () => {
 
   return rows;
 };
-const getParticularProduct = async (prod_name) => {
-  const [rows] = await db.query("Select * FROM PRODUCT WHERE prod_name = ? ", [
-    prod_name,
-  ]);
-  if (rows.length == 0) throw new Error("Product not found!!");
-  return { success: true, data: rows };
-};
 const filterProduct = async (user_loc, prod_name, prod_price) => {
   const [rows] = await db.query(
     `SELECT u.user_loc,p.prod_name,p.prod_price
@@ -117,19 +110,6 @@ AND p.prod_price <= ?;`,
 };
 
 //Why ??
-const searchProduct = async (prod_name) => {
-  try {
-    const [rows] = db.query(
-      "SELECT p.user_id,u.user_name,p.prod_name,p.prod_price,p.prod_category,p.prod_quantity from product p inner join users u on p.user_id = u.user_id where p.prod_name = ? ",
-      [prod_name]
-    );
-
-    if (rows.length == 0) throw new Error("Product not found !");
-    return { success: true, data: rows[0] };
-  } catch (err) {
-    return { success: false, message: err.message };
-  }
-};
 
 const getUserTrans = async (user_id) => {
   try {
@@ -332,10 +312,8 @@ module.exports = {
   createUser,
   createProduct,
   getAllUsers,
-  searchProduct,
   getAllUserOrder,
   getAllProducts,
-  getParticularProduct,
   filterProduct,
   getUserTrans,
   getSellerTrans,

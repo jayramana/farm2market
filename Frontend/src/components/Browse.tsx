@@ -47,42 +47,15 @@ const Browse = () => {
         </button>
       </div>
 
-      {/* Filters */}
-      <div className="flex gap-4">
-        <input
-          type="number"
-          name=""
-          id=""
-          max={100000}
-          min={0}
-          value={pricefilter === undefined ? "" : pricefilter}
-          onChange={(e) =>
-            setPricefilter(
-              e.target.value === "" ? undefined : Number(e.target.value)
-            )
-          }
-        />
-        <select name="" id="" onChange={(e) => setLocation(e.target.value)}>
-          <option value="">Loc</option>
-          <option value="chennai">Chennai</option>
-          <option value="bangalore">Bangalore</option>
-          <option value="coimbatore">Coimbatore</option>
-          <option value="goa">Goa</option>
-          <option value="new delhi">New Delhi</option>
-        </select>
+      <div className="flex gap-2">
+        {products.map((prod, ind) => (
+          <div key={ind} className="border-2 border-solid">
+            <p>{prod.prod_name}</p>
+            <p>{prod.prod_category}</p>
+            <p>{prod.prod_price}</p>
+          </div>
+        ))}
       </div>
-
-      {/* Search Results */}
-      {!loadingProd ? (
-        <div>
-          <p>Products are being browsed... </p>
-        </div>
-      ) : (
-        <div>
-          <p>None Found</p>
-        </div>
-      )}
-      <p>Hello Added to change this</p>
     </main>
   );
 };

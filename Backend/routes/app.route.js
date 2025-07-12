@@ -4,11 +4,9 @@ const router = express.Router();
 
 const {
   getAllProducts,
-  getParticular,
   addProduct,
   filterProduct,
   getUserOrder,
-  searchProduct,
   getSellerSales,
   getFarmerstats,
   getNormstats,
@@ -34,9 +32,7 @@ router.get("/product/seller/sales/:id", getSellerSales);
 router.get("/product/seller/sellStats/:id", getFarmerstats); //Ok
 
 router.get("/product/getAll", getAllProducts); //Ok
-router.get("/product/filterbyname", getParticular);
 router.get("/product/filterby", filterProduct);
-router.get("/product/search", searchProduct);
 
 router.get("/product/user/orders/:id", getUserOrder); //Ok
 

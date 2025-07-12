@@ -17,19 +17,29 @@ type ProductStore = {
   prod_categories: string[];
   prod_sellers: string[];
   prod_by_name: Product[];
+  prod_by_filters: Product[];
 
   loadingProd: boolean;
   loadingCat: boolean;
   loadingSellers: boolean;
+  loadingProdbyname: boolean;
+  loadingProdbyfilters: boolean;
 
   errorProd: string | null;
   errorCat: string | null;
   errorSellers: string | null;
+  errorProdbyname: string | null;
+  errorProdbyfilters: string | null;
 
   fetchProduct: () => Promise<void>;
   fetchCategories: () => Promise<void>;
   fetchSellers: () => Promise<void>;
   fetchProdbyName: (name: string) => Promise<void>;
+  fetchProdbyfilters: (
+    name: string,
+    loc: string,
+    price: string
+  ) => Promise<void>;
 };
 
 export const useFtm = create<ProductStore>((set) => ({
@@ -37,12 +47,18 @@ export const useFtm = create<ProductStore>((set) => ({
   prod_categories: [],
   prod_sellers: [],
   prod_by_name: [],
+  prod_by_filters: [],
   loadingProd: false,
   loadingCat: false,
   loadingSellers: false,
+  loadingProdbyname: false,
+  loadingProdbyfilters: false,
+
   errorProd: null,
   errorCat: null,
   errorSellers: null,
+  errorProdbyname: null,
+  errorProdbyfilters: null,
   fetchProduct: async () => {
     try {
       set({ loadingProd: true });
@@ -77,16 +93,28 @@ export const useFtm = create<ProductStore>((set) => ({
       set({ errorSellers: error.message, loadingSellers: false });
     }
   },
-  fetchProdbyName: async (name: string) => {
+  fetchProdbyName: async (prod_name) => {
     try {
-      set({ loadingProd: true });
+      set({ loadingProdbyname: true });
       const res = await axios.get(
         "http://localhost:3000/api/f2m/product/filterbyname",
-        { params: { name } }
+        {params : {prod_name}}
       );
-      set({ prod_by_name: res.data.data,loadingProd : false});
+      set({ prod_by_name: res.data.data, loadingProdbyfilters: false });
     } catch (error: any) {
-      set({ errorProd: error.message, loadingProd : false});
+      set({ errorProdbyfilters: error.message, loadingProdbyfilters: false });
+    }
+  },
+  fetchProdbyfilters: async (name, loc, price) => {
+    try {
+      set({ loadingProdbyfilters: true });
+      const res = await axios.get(
+        "http://localhost:3000/api/f2m/product/filterby",
+        { params: { name, loc, price } }
+      );
+      set({ prod_by_filters: res.data.data, loadingProdbyfilters: false });
+    } catch (error: any) {
+      set({ loadingProdbyfilters: false, errorProdbyfilters: error.message });
     }
   },
 }));

@@ -12,18 +12,7 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-// Get a Particular item with a searched name
-const getParticular = async (req, res) => {
-  try {
-    const { prod_name } = req.body;
 
-    const fetchData = await User.getParticularProduct(prod_name);
-
-    res.status(200).json({ message: "Success", data:fetchData });
-  } catch (error) {
-    res.status(500).json({ err: "Internal Server Error" });
-  }
-};
 
 // Add products to DB(Requires role handling)
 const addProduct = async (req, res) => {
@@ -78,22 +67,7 @@ const filterProduct = async (req, res) => {
   }
 };
 
-const searchProduct = async (req, res) => {
-  try {
-    const { prod_name } = req.body;
 
-    if (!prod_name) {
-      return res.status(400).json({ message: "Fill the name of the product" });
-    }
-
-    const [fetchData] = await User.searchProduct(prod_name);
-
-    res.status(200).json({ message: "Success", data: fetchData });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ err: "Internal Server Error" });
-  }
-};
 
 // Get a Particular User's Order
 const getUserOrder = async (req, res) => {
@@ -205,45 +179,37 @@ const editProdstats = async (req, res) => {
 
 const allCategories = async (req, res) => {
   try {
-    const fetchData = (await User.getAllCategories()).map(r => r.prod_category);
-;
-    return res.status(200).json({data : fetchData})
-    
+    const fetchData = (await User.getAllCategories()).map(
+      (r) => r.prod_category
+    );
+    return res.status(200).json({ data: fetchData });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
-  
-}
+};
 
 // Get All Farmers
 const allSellers = async (req, res) => {
   try {
-    const fetchData = (await User.getAllSellers()).map(r => r.user_name);
-    return res.status(200).json({ data : fetchData})
-    
+    const fetchData = (await User.getAllSellers()).map((r) => r.user_name);
+    return res.status(200).json({ data: fetchData });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
-  
-}
+};
 
 // Get All Locations
 const allLocations = async (req, res) => {
   try {
-    const fetchData = (await User.getAllLocations()).map(r => r.user_loc);
-    return res.status(200).json({ data : fetchData})
-    
+    const fetchData = (await User.getAllLocations()).map((r) => r.user_loc);
+    return res.status(200).json({ data: fetchData });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
-  
-}
-
+};
 
 module.exports = {
   getAllProducts,
-  getParticular,
-  searchProduct,
   addProduct,
   filterProduct,
   getUserOrder,
@@ -254,5 +220,5 @@ module.exports = {
   editProdstats,
   allCategories,
   allSellers,
-  allLocations
+  allLocations,
 };
