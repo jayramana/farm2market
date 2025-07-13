@@ -107,11 +107,11 @@ const getNormstats = async (req, res) => {
     if (Number.isNaN(_id))
       return res.status(404).json({ message: "User not Found!!" });
 
-    const [fetchData] = await User.getNormieStats(_id);
+    const fetchData = await User.getNormieStats(_id);
 
     return res.status(200).json({ message: "Success", data: fetchData });
   } catch (error) {
-    return res.status(500).json({ message: "Failiure", err: error });
+    return res.status(500).json({ message: "Failiure", err: error.message });
   }
 };
 

@@ -95,9 +95,6 @@ const getAllProducts = async () => {
   return rows;
 };
 
-
-//Why ??
-
 const getUserTrans = async (user_id) => {
   try {
     const [rows] = await db.query(
@@ -115,8 +112,8 @@ const getSellerTrans = async (user_id) => {
   try {
     const [rows] = await db.query(
       `SELECT
-         p.prod_id,
-         p.prod_name,
+         t.prod_id,
+         t.prod_name,
          t.quantity,
          t.final_price
        FROM Transactions t

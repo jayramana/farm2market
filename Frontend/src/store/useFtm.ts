@@ -19,42 +19,45 @@ type ProductStore = {
   products: Product[];
   prod_categories: string[];
   prod_sellers: string[];
-  orders: Orders[];
+  locations: string[];
 
   loadingProd: boolean;
   loadingCat: boolean;
   loadingSellers: boolean;
-  loadingOrders: boolean;
+  loadingLoacations: boolean;
 
   errorProd: string | null;
   errorCat: string | null;
   errorSellers: string | null;
-  errorOrders: string | null;
+  errorLocation: string | null;
 
   fetchProduct: () => Promise<void>;
   fetchCategories: () => Promise<void>;
   fetchSellers: () => Promise<void>;
-  fetchOrders: (id: number) => Promise<void>;
+  fetchLocations: () => Promise<void>;
 };
 
 export const useFtm = create<ProductStore>((set) => ({
-  id: -1,
+  id: 3,
   products: [],
   prod_categories: [],
   prod_sellers: [],
   orders: [],
+  locations:[],
 
   loadingProd: false,
   loadingCat: false,
   loadingSellers: false,
   loadingProdbyfilters: false,
   loadingOrders: false,
+  loadingLoacations: false,
 
   errorProd: null,
   errorCat: null,
   errorSellers: null,
   errorProdbyfilters: null,
   errorOrders: null,
+  errorLocation: null,
 
   fetchProduct: async () => {
     try {
@@ -91,17 +94,15 @@ export const useFtm = create<ProductStore>((set) => ({
     }
   },
 
-  // inside create<ProductStore>(set => ({ … }))
 
-  fetchOrders: async (id) => {
-    set({ loadingOrders: true });
+
+  fetchLocations: async () => {
+    set({loadingLoacations:true})
     try {
-      const res = await axios(
-        `http://localhost:3000/api/f2m/product/user/orders/${id}`
-      );
-      set({ orders: res.data.data, loadingOrders: false });
-    } catch (error: any) {
-      set({ loadingOrders: false, errorOrders: error.message });
+      const res = await axios.get("http://localhost:3000/api/f2m/product/allLocations");
+      set({locations : res.data,loadingLoacations:false})
+    } catch (error : any) {
+      set({ errorLocation: error.message, loadingLoacations: false });
     }
-  },
+  }
 }));
