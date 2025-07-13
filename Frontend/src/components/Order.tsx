@@ -1,8 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFtm } from "../store/useFtm";
 
 const Order = () => {
-  const { orders, fetchOrders, loadingOrders, errorOrders } = useFtm();
+  const { id, orders, fetchOrders, loadingOrders, errorOrders } = useFtm();
+
+  useEffect(() => {
+    try {
+      fetchOrders(id);
+    } catch (error) {
+      console.log(errorOrders);
+      console.log(error);
+    }
+  });
   return (
     <div>
       {!loadingOrders ? (

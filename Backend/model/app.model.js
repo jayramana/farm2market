@@ -56,7 +56,7 @@ const createProduct = async (
     if (role === "farmer") {
       if (prev_check.length == 0) {
         await db.query(
-          "INSERT INTO PRODUCT (user_id,prod_name, prod_category, prod_price, prod_quantity, prod_description) VALUES (?, ?, ?, ?, ?, ?);",
+          "INSERT INTO PRODUCT (user_id,prod_name, prod_category, prod_price, prod_quantity, prod_description,Seller_name,prod_loc) VALUES (?, ?, ?, ?, ?, ?,(SELECT user_name FROM users where users.user_id = product.user_id),(SELECT user_loc FROM users where users.user_id = product.user_id));",
           [
             user_id,
             prod_name,
@@ -94,20 +94,7 @@ const getAllProducts = async () => {
 
   return rows;
 };
-const filterProduct = async (user_loc, prod_name, prod_price) => {
-  const [rows] = await db.query(
-    `SELECT u.user_loc,p.prod_name,p.prod_price
-from product p
-inner join Users u
-on u.user_id = p.user_id
-Where u.user_loc = ? 
-AND p.prod_name = ?
-AND p.prod_price <= ?;`,
-    [user_loc, prod_name, prod_price]
-  );
-  if (rows.length == 0) throw new Error("Products not Found!!");
-  return { success: true, data: rows };
-};
+
 
 //Why ??
 
@@ -300,13 +287,12 @@ const getAllSellers = async () => {
 const getAllLocations = async () => {
   try {
     const [rows] = await db.query("SELECT DISTINCT user_loc from users");
-    if (rows.length === 0) throw new Error('No Locations found');
+    if (rows.length === 0) throw new Error("No Locations found");
     return rows;
   } catch (error) {
     return { success: false, message: error.message };
-    
   }
-}
+};
 
 module.exports = {
   createUser,
@@ -314,7 +300,6 @@ module.exports = {
   getAllUsers,
   getAllUserOrder,
   getAllProducts,
-  filterProduct,
   getUserTrans,
   getSellerTrans,
   getParticularSTrans,
@@ -324,5 +309,5 @@ module.exports = {
   editProduct,
   getAllCategories,
   getAllSellers,
-  getAllLocations
+  getAllLocations,
 };

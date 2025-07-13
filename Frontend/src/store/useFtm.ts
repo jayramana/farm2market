@@ -19,29 +19,21 @@ type ProductStore = {
   products: Product[];
   prod_categories: string[];
   prod_sellers: string[];
-  prod_by_filters: Product[];
   orders: Orders[];
 
   loadingProd: boolean;
   loadingCat: boolean;
   loadingSellers: boolean;
-  loadingProdbyfilters: boolean;
   loadingOrders: boolean;
 
   errorProd: string | null;
   errorCat: string | null;
   errorSellers: string | null;
-  errorProdbyfilters: string | null;
   errorOrders: string | null;
 
   fetchProduct: () => Promise<void>;
   fetchCategories: () => Promise<void>;
   fetchSellers: () => Promise<void>;
-  fetchProdbyfilters: (
-    name: string,
-    loc: string,
-    price: string
-  ) => Promise<void>;
   fetchOrders: (id: number) => Promise<void>;
 };
 
@@ -50,7 +42,6 @@ export const useFtm = create<ProductStore>((set) => ({
   products: [],
   prod_categories: [],
   prod_sellers: [],
-  prod_by_filters: [],
   orders: [],
 
   loadingProd: false,
@@ -100,18 +91,8 @@ export const useFtm = create<ProductStore>((set) => ({
     }
   },
 
-  fetchProdbyfilters: async (name, loc, price) => {
-    try {
-      set({ loadingProdbyfilters: true });
-      const res = await axios.get(
-        "http://localhost:3000/api/f2m/product/filterby",
-        { params: { name, loc, price } }
-      );
-      set({ prod_by_filters: res.data.data, loadingProdbyfilters: false });
-    } catch (error: any) {
-      set({ loadingProdbyfilters: false, errorProdbyfilters: error.message });
-    }
-  },
+  // inside create<ProductStore>(set => ({ … }))
+
   fetchOrders: async (id) => {
     set({ loadingOrders: true });
     try {

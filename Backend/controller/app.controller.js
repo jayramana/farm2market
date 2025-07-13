@@ -39,7 +39,7 @@ const addProduct = async (req, res) => {
         .json({ message: "Fill all the fields before submitting" });
     }
 
-    const [addProd] = await User.createProduct(
+    const addProd = await User.createProduct(
       user_id,
       prod_name,
       prod_category,
@@ -53,20 +53,6 @@ const addProduct = async (req, res) => {
     res.status(500).json({ err: error.message });
   }
 };
-
-// Advanced Filtering of Products
-const filterProduct = async (req, res) => {
-  try {
-    const { user_loc, prod_name, prod_price } = req.body;
-    const newPrice = parseFloat(prod_price);
-    const [fetchData] = await User.filterProduct(user_loc, prod_name, newPrice);
-
-    res.status(200).json({ message: "Success", data: fetchData });
-  } catch (error) {
-    return res.status(500).json({ err: "Internal Server Error" });
-  }
-};
-
 
 
 // Get a Particular User's Order
@@ -211,7 +197,6 @@ const allLocations = async (req, res) => {
 module.exports = {
   getAllProducts,
   addProduct,
-  filterProduct,
   getUserOrder,
   getSellerSales,
   getFarmerstats,

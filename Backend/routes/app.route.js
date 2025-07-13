@@ -5,7 +5,6 @@ const router = express.Router();
 const {
   getAllProducts,
   addProduct,
-  filterProduct,
   getUserOrder,
   getSellerSales,
   getFarmerstats,
@@ -32,7 +31,6 @@ router.get("/product/seller/sales/:id", getSellerSales);
 router.get("/product/seller/sellStats/:id", getFarmerstats); //Ok
 
 router.get("/product/getAll", getAllProducts); //Ok
-router.get("/product/filterby", filterProduct);
 
 router.get("/product/user/orders/:id", getUserOrder); //Ok
 

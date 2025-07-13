@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import  { useEffect } from "react";
 import { useFtm } from "../store/useFtm";
 
 const Home = () => {
-  const { prod_categories, loadingCat, errorCat, fetchCategories } = useFtm();
-  const { prod_sellers, loadingSellers, errorSellers, fetchSellers } = useFtm();
+  const { prod_categories, loadingCat, fetchCategories } = useFtm();
+  const { prod_sellers, loadingSellers, fetchSellers } = useFtm();
 
   useEffect(() => {
     try {
       fetchCategories();
       fetchSellers();
-    } catch (error: any) {
-      throw new Error("Error in fetching datas", error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error("Error in fetching datas: " + error.message);
+      } else {
+        throw new Error("Error in fetching datas");
+      }
     }
   }, [fetchCategories, fetchSellers]);
 
