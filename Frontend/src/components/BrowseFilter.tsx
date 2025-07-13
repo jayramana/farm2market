@@ -19,9 +19,10 @@ const BrowseFilter: React.FC = () => {
     const maxPrice = price ? Number(price) : Infinity;
 
     const filtered = products.filter((prod) => {
-      const matchesName  = !name  || prod.prod_name.toLowerCase().includes(name.toLowerCase());
+      const matchesName = !name || prod.prod_name.toLowerCase().includes(name.toLowerCase());
+      const matchesLoc   = !loc   || prod.prod_loc === loc;
       const matchesPrice = prod.prod_price <= maxPrice;
-      return matchesName  && matchesPrice;
+      return matchesName && matchesLoc && matchesPrice;
     });
 
     setData(filtered);
@@ -83,6 +84,8 @@ const BrowseFilter: React.FC = () => {
               <p><strong>Name:</strong> {prod.prod_name}</p>
               <p><strong>Category:</strong> {prod.prod_category}</p>
               <p><strong>Price:</strong> ₹{prod.prod_price}</p>
+              <p><strong>Seller:</strong>{prod.Seller_name}</p>
+              <p><strong>Location:</strong>{prod.prod_loc}</p>
             </div>
           ))}
         </div>

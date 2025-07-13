@@ -7,4 +7,6 @@ export type Product = {
   prod_quantity: number;
   prod_description: string;
   listed_at: Date;
+  Seller_name: string;
+  prod_loc: string;
 };
