@@ -291,6 +291,16 @@ const getAllLocations = async () => {
   }
 };
 
+const getUserDetails = async (id) => {
+  try {
+    const [rows] = await db.query("Select user_name,user_email,user_phone,user_loc,created_at from users where user_id = ?", [id])
+    if (rows.length === 0) throw new Error("No details found");
+    return rows[0];
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   createUser,
   createProduct,
@@ -307,4 +317,5 @@ module.exports = {
   getAllCategories,
   getAllSellers,
   getAllLocations,
+  getUserDetails
 };

@@ -12,8 +12,6 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-
-
 // Add products to DB(Requires role handling)
 const addProduct = async (req, res) => {
   try {
@@ -53,7 +51,6 @@ const addProduct = async (req, res) => {
     res.status(500).json({ err: error.message });
   }
 };
-
 
 // Get a Particular User's Order
 const getUserOrder = async (req, res) => {
@@ -194,6 +191,22 @@ const allLocations = async (req, res) => {
   }
 };
 
+//Get user Details
+
+const getUserdetails = async (req, res) => {
+  try {
+    const  id = parseInt(req.params.id,10);
+    const fetchData = await User.getUserDetails(id);
+
+    if (fetchData.length === 0)
+      return res.status(400).json({ success: false, data: "None Found!!" });
+    return res.status(200).json({ success: true, data: fetchData });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, data: error });
+  }
+};
+
 module.exports = {
   getAllProducts,
   addProduct,
@@ -206,4 +219,5 @@ module.exports = {
   allCategories,
   allSellers,
   allLocations,
+  getUserdetails
 };

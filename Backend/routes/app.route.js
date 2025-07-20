@@ -13,7 +13,8 @@ const {
   editProdstats,
   allCategories,
   allLocations,
-allSellers
+  allSellers,
+getUserdetails
 } = require("../controller/app.controller.js");
 
 // Check the app.model.js before finalizing the project
@@ -33,6 +34,7 @@ router.get("/product/seller/sellStats/:id", getFarmerstats); //Ok
 router.get("/product/getAll", getAllProducts); //Ok
 
 router.get("/product/user/orders/:id", getUserOrder); //Ok
+router.get("/product/users/details/:id", getUserdetails);
 
 router.post("/product/add", addProduct); //Ok
 router.put("/product/edit",editProdstats) // Ok
