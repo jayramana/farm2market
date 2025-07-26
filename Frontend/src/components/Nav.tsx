@@ -1,7 +1,18 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useFtm } from "../store/useFtm";
 const Nav = () => {
+  const { id,users, fetchUserDetails, loadingUsers } = useFtm();
+
+  const [name,setName] = useState("")
+  useEffect(() => {
+    fetchUserDetails(id);
+  }, [id, fetchUserDetails]);
+
+  useEffect(() => {
+    if(!loadingUsers && users.user_name)
+    setName(users.user_name);
+  }, [users.user_name,loadingUsers]);
   const Navigate = useNavigate();
 
   const toOrders = () => {
@@ -19,7 +30,7 @@ const Nav = () => {
         <span onClick={toOrders}>Orders</span>
         <span>Report Issues</span>
       </div>
-      <span onClick={toProfile}>Profile</span>
+      <span onClick={toProfile}>{name}</span>
     </main>
   );
 };

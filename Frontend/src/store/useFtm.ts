@@ -2,7 +2,7 @@ import { create } from "zustand";
 import axios from "axios";
 import type { Product } from "../types/product";
 import type { User } from "../types/user";
-
+import type { Orders } from "../types/transactions";
 
 type ProductStore = {
   id: number;
@@ -10,35 +10,45 @@ type ProductStore = {
   prod_categories: string[];
   prod_sellers: string[];
   locations: string[];
-  users: User[];
+  users: User;
+  orders: Orders[];
 
   loadingProd: boolean;
   loadingCat: boolean;
   loadingSellers: boolean;
   loadingLoacations: boolean;
   loadingUsers: boolean;
+  loadingOrders: boolean;
 
   errorProd: string | null;
   errorCat: string | null;
   errorSellers: string | null;
   errorLocation: string | null;
   errorUsers: string | null;
-  fetchUserDetails: (id : number) => Promise<void>;
-
+  errorOrders: string | null;
+  
   fetchProduct: () => Promise<void>;
   fetchCategories: () => Promise<void>;
   fetchSellers: () => Promise<void>;
   fetchLocations: () => Promise<void>;
+  fetchUserDetails: (id: number) => Promise<void>;
+  fetchOrder: (id: number) => Promise<void>;
 };
 
 export const useFtm = create<ProductStore>((set) => ({
-  id: 3,
+  id: 2,
   products: [],
   prod_categories: [],
   prod_sellers: [],
   orders: [],
   locations: [],
-  users:[],
+  users: {
+    user_name: "",
+    user_email: "",
+    user_phone: "",
+    user_loc: "",
+    created_at: new Date(),
+  },
 
   loadingProd: false,
   loadingCat: false,
@@ -110,6 +120,16 @@ export const useFtm = create<ProductStore>((set) => ({
       set({ users: res.data.data, loadingUsers: false });
     } catch (error : any) {
       set({errorUsers : error.message, loadingUsers: false})
+    }
+  },
+
+  fetchOrder: async (id: number) => {
+    set({ loadingOrders: true });
+    try {
+      const res = await axios.get(`http://localhost:3000/api/f2m/product/user/orders/${id}`);
+      set({ orders: res.data,loadingOrders : false });
+    } catch (error : any) {
+      set({ errorOrders: error.message, loadingOrders: false });
     }
   }
 }));

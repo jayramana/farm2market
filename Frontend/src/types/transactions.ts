@@ -3,6 +3,7 @@ export type Orders = {
   buyer_id: number;
   seller_id: number;
   prod_id: number;
+  quantity: number;
   final_price: number;
   transaction_date: string;
   prod_price: number;

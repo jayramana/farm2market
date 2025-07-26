@@ -57,8 +57,8 @@ const getUserOrder = async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (Number.isNaN(id)) return res.status();
-    const [result] = await User.getUserTrans(id);
-    return res.status(200).json({ message: "Success", data: result });
+    const result = await User.getUserTrans(id);
+    return res.status(200).json({success : true, data : result });
   } catch (error) {
     return res.status(500).json({ err: error.message });
   }

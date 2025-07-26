@@ -102,7 +102,7 @@ const getUserTrans = async (user_id) => {
       [user_id]
     );
     if (rows.length == 0) throw new Error("No transactions Found !! ");
-    return { success: true, data: rows };
+    return rows;
   } catch (err) {
     return { success: false, message: err.message };
   }

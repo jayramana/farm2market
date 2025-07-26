@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
-import Order from "./components/Order";
+import Order from "./components/Orders";
 import Profile from "./components/Profile";
-import BrowseFilter from "./components/BrowseFilter";
+import BrowseFilter from "./components/Browse";
 function App() {
   return (
     <main>
