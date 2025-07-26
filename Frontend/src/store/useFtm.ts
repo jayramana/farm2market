@@ -12,6 +12,9 @@ type ProductStore = {
   locations: string[];
   users: User;
   orders: Orders[];
+  currView: number;
+  currCat: string;
+  currSeller: string;
 
   loadingProd: boolean;
   loadingCat: boolean;
@@ -26,13 +29,16 @@ type ProductStore = {
   errorLocation: string | null;
   errorUsers: string | null;
   errorOrders: string | null;
-  
+
   fetchProduct: () => Promise<void>;
   fetchCategories: () => Promise<void>;
   fetchSellers: () => Promise<void>;
   fetchLocations: () => Promise<void>;
   fetchUserDetails: (id: number) => Promise<void>;
   fetchOrder: (id: number) => Promise<void>;
+  changeCurrProd: (id: number) => void;
+  fetchCat: (name: string) => void;
+  fetchSeller: (name: string) => void;
 };
 
 export const useFtm = create<ProductStore>((set) => ({
@@ -49,6 +55,9 @@ export const useFtm = create<ProductStore>((set) => ({
     user_loc: "",
     created_at: new Date(),
   },
+  currView: -1,
+  currCat: "",
+  currSeller: "",
 
   loadingProd: false,
   loadingCat: false,
@@ -56,7 +65,7 @@ export const useFtm = create<ProductStore>((set) => ({
   loadingProdbyfilters: false,
   loadingOrders: false,
   loadingLoacations: false,
-  loadingUsers : false,
+  loadingUsers: false,
 
   errorProd: null,
   errorCat: null,
@@ -64,8 +73,11 @@ export const useFtm = create<ProductStore>((set) => ({
   errorProdbyfilters: null,
   errorOrders: null,
   errorLocation: null,
-  errorUsers : null,
+  errorUsers: null,
 
+  changeCurrProd: (id: number) => {
+    set({ currView: id });
+  },
   fetchProduct: async () => {
     try {
       set({ loadingProd: true });
@@ -113,23 +125,33 @@ export const useFtm = create<ProductStore>((set) => ({
     }
   },
 
-  fetchUserDetails: async (id : number) => {
+  fetchUserDetails: async (id: number) => {
     set({ loadingUsers: true });
     try {
-      const res = await axios.get(`http://localhost:3000/api/f2m/product/users/details/${id}`);
+      const res = await axios.get(
+        `http://localhost:3000/api/f2m/product/users/details/${id}`
+      );
       set({ users: res.data.data, loadingUsers: false });
-    } catch (error : any) {
-      set({errorUsers : error.message, loadingUsers: false})
+    } catch (error: any) {
+      set({ errorUsers: error.message, loadingUsers: false });
     }
   },
 
   fetchOrder: async (id: number) => {
     set({ loadingOrders: true });
     try {
-      const res = await axios.get(`http://localhost:3000/api/f2m/product/user/orders/${id}`);
-      set({ orders: res.data,loadingOrders : false });
-    } catch (error : any) {
+      const res = await axios.get(
+        `http://localhost:3000/api/f2m/product/user/orders/${id}`
+      );
+      set({ orders: res.data, loadingOrders: false });
+    } catch (error: any) {
       set({ errorOrders: error.message, loadingOrders: false });
     }
-  }
+  },
+  fetchCat: (name: string) => {
+      set({ currCat: name });
+  },
+  fetchSeller: (name: string) => {
+      set({ currSeller: name });
+  },
 }));

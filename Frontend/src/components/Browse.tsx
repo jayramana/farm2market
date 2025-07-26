@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useFtm } from "../store/useFtm";
 import type { Product } from "../types/product";
+import { useNavigate } from "react-router-dom";
 
 const BrowseFilter: React.FC = () => {
-  const { products, loadingProd, errorProd, fetchProduct } = useFtm();
+  const { changeCurrProd, products, loadingProd, errorProd, fetchProduct } = useFtm();
+  const navigate = useNavigate();
 
   const [data, setData] = useState<Product[]>([]);
 
   const [name, setName]   = useState<string>("");
   const [price, setPrice] = useState<string>("");
-  const [loc, setLoc]     = useState<string>("");
+  const [loc, setLoc] = useState<string>("");
+  
+    const redirect = (id : number) => {
+      changeCurrProd(id);
+      navigate("/individual");
+  }
 
   useEffect(() => {
     fetchProduct();
@@ -80,6 +87,7 @@ const BrowseFilter: React.FC = () => {
             <div
               key={prod.prod_id}
               className="border p-4 rounded shadow-sm"
+              onClick={()=>redirect(prod.prod_id)}
             >
               <p><strong>Name:</strong> {prod.prod_name}</p>
               <p><strong>Category:</strong> {prod.prod_category}</p>
