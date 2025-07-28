@@ -15,6 +15,7 @@ type ProductStore = {
   currView: number;
   currCat: string;
   currSeller: string;
+  
 
   loadingProd: boolean;
   loadingCat: boolean;
@@ -58,6 +59,7 @@ export const useFtm = create<ProductStore>((set) => ({
   currView: -1,
   currCat: "",
   currSeller: "",
+  cart : [],
 
   loadingProd: false,
   loadingCat: false,

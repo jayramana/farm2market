@@ -14,7 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/orders" element={<Order />} />
-        <Route path="/browseonly" element={<BrowseFilter />} />
+        <Route path="/browse" element={<BrowseFilter />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/individual" element={<IndividualProduct />} />
         <Route path="/group-by-categories" element={<BrowseviaCate />} />

@@ -23,7 +23,7 @@ const Nav = () => {
   };
 
   return (
-    <main className="flex justify-between px-12 py-4">
+    <main className="col-span-2 flex justify-between px-12 py-4">
       <p>Farm2Market</p>
 
       <div>
