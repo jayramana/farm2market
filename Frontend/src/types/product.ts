@@ -10,3 +10,7 @@ export type Product = {
   Seller_name: string;
   prod_loc: string;
 };
+
+export type hashMap = {
+  [key: number]: Array<Product & { selected_quantity: number }>
+}

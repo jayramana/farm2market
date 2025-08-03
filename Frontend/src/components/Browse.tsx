@@ -1,22 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useFtm } from "../store/useFtm";
-import type { Product } from "../types/product";
-import { useNavigate } from "react-router-dom";
+import type { hashMap, Product } from "../types/product";
+import { useNavigate, Link } from "react-router-dom";
 
 const BrowseFilter: React.FC = () => {
-  const { changeCurrProd, products, loadingProd, errorProd, fetchProduct } = useFtm();
+  const {
+    currSelected,
+    changeCurrProd,
+    products,
+    loadingProd,
+    errorProd,
+    fetchProduct,
+    setCurrSelected,
+    test_products,
+    set_test_products,
+  } = useFtm();
   const navigate = useNavigate();
 
   const [data, setData] = useState<Product[]>([]);
 
-  const [name, setName]   = useState<string>("");
+  const [name, setName] = useState<string>("");
   const [price, setPrice] = useState<string>("");
   const [loc, setLoc] = useState<string>("");
-  
-    const redirect = (id : number) => {
-      changeCurrProd(id);
-      navigate("/individual");
-  }
+
+  const [order, setOrder] = useState<number[]>([]);
+  const [proObj, setProobj] = useState<hashMap>({});
+
+  const redirect = (id: number) => {
+    // changeCurrProd(id);
+    // navigate("/individual");
+  };
 
   useEffect(() => {
     fetchProduct();
@@ -26,14 +39,46 @@ const BrowseFilter: React.FC = () => {
     const maxPrice = price ? Number(price) : Infinity;
 
     const filtered = products.filter((prod) => {
-      const matchesName = !name || prod.prod_name.toLowerCase().includes(name.toLowerCase());
-      const matchesLoc   = !loc   || prod.prod_loc === loc;
+      const matchesName =
+        !name || prod.prod_name.toLowerCase().includes(name.toLowerCase());
+      const matchesLoc = !loc || prod.prod_loc === loc;
       const matchesPrice = prod.prod_price <= maxPrice;
       return matchesName && matchesLoc && matchesPrice;
     });
 
     setData(filtered);
   };
+
+  const orderUpdate = (id: number) => {
+    setOrder((prev) => [...prev, id]);
+    console.log(order.length);
+  };
+
+  const confirmOrder = () => {
+    setCurrSelected(order);
+  };
+
+  useEffect(() => {
+    if (products.length === 0) return;
+
+    const grouped = products.reduce<Record<number, Product[]>>((acc, item) => {
+      const key = item.prod_id;
+      if (!acc[key]) acc[key] = [];
+      const newObj  = { ...item, selected_quantity: 1 };
+      acc[key].push(newObj);
+      return acc;
+    }, {});
+
+    setProobj(grouped);
+  }, [products]);
+
+  useEffect(() => {
+    set_test_products(proObj);
+  }, [proObj, set_test_products]);
+
+  useEffect(() => {
+    console.log(test_products);
+  }, [test_products]);
 
   const toRender = data.length > 0 ? data : products;
 
@@ -44,13 +89,13 @@ const BrowseFilter: React.FC = () => {
           type="text"
           placeholder="Search for a product"
           value={name}
-          onChange={e => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
           className="border p-1"
         />
 
         <select
           value={loc}
-          onChange={e => setLoc(e.target.value)}
+          onChange={(e) => setLoc(e.target.value)}
           className="border p-1"
         >
           <option value="">All locations</option>
@@ -64,7 +109,7 @@ const BrowseFilter: React.FC = () => {
           type="number"
           placeholder="Max price"
           value={price}
-          onChange={e => setPrice(e.target.value)}
+          onChange={(e) => setPrice(e.target.value)}
           className="border p-1"
         />
 
@@ -77,27 +122,63 @@ const BrowseFilter: React.FC = () => {
       </div>
 
       {loadingProd && <p>Loading products…</p>}
-      {errorProd   && <p className="text-red-600">{errorProd}</p>}
+      {errorProd && <p className="text-red-600">{errorProd}</p>}
 
       {toRender.length === 0 ? (
         <p className="text-gray-500">No products found.</p>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid  grid-cols-4 gap-4">
           {toRender.map((prod) => (
             <div
               key={prod.prod_id}
               className="border p-4 rounded shadow-sm"
-              onClick={()=>redirect(prod.prod_id)}
+              
             >
-              <p><strong>Name:</strong> {prod.prod_name}</p>
-              <p><strong>Category:</strong> {prod.prod_category}</p>
-              <p><strong>Price:</strong> ₹{prod.prod_price}</p>
-              <p><strong>Seller:</strong>{prod.Seller_name}</p>
-              <p><strong>Location:</strong>{prod.prod_loc}</p>
+              <p>
+                <strong>Name:</strong> {prod.prod_name}
+              </p>
+              <p>
+                <strong>Category:</strong> {prod.prod_category}
+              </p>
+              <p>
+                <strong>Price:</strong> ₹{prod.prod_price}
+              </p>
+              <p>
+                <strong>Seller:</strong>
+                {prod.Seller_name}
+              </p>
+              <p>
+                <strong>Location:</strong>
+                {prod.prod_loc}
+              </p>
+              <div className="flex gap-4">
+                <button className="border-2 border-solid border-black">
+                  <p className="p-0.5">WishList</p>
+                </button>
+
+                <button
+                  className="border-2 border-solid border-black"
+                  onClick={() => orderUpdate(prod.prod_id)}
+                >
+                  <p className="p-0.5">Add to Cart</p>
+                </button>
+              </div>
             </div>
           ))}
         </div>
       )}
+      <div className="flex justify-between">
+        <p>{order.length} in Cart</p>
+        <Link to="/cart">
+          <button
+            className="bg-black text-white rounded-lg px-3 py-1.5"
+            onClick={confirmOrder}
+            disabled={order.length > 0 ? false : true}
+          >
+            Confirm Order
+          </button>
+        </Link>
+      </div>
     </main>
   );
 };

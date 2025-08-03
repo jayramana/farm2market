@@ -1,17 +1,19 @@
 import { create } from "zustand";
 import axios from "axios";
-import type { Product } from "../types/product";
+import type { hashMap, Product } from "../types/product";
 import type { User } from "../types/user";
 import type { Orders } from "../types/transactions";
 
 type ProductStore = {
   id: number;
   products: Product[];
+  test_products: hashMap;
   prod_categories: string[];
   prod_sellers: string[];
   locations: string[];
   users: User;
   orders: Orders[];
+  currSelected: number[];
   currView: number;
   currCat: string;
   currSeller: string;
@@ -40,15 +42,19 @@ type ProductStore = {
   changeCurrProd: (id: number) => void;
   fetchCat: (name: string) => void;
   fetchSeller: (name: string) => void;
+  setCurrSelected: (numArray: number[]) => void;
+  set_test_products: (proObj : hashMap) => void;
 };
 
 export const useFtm = create<ProductStore>((set) => ({
   id: 2,
   products: [],
+  test_products : {},
   prod_categories: [],
   prod_sellers: [],
   orders: [],
   locations: [],
+  currSelected : [],
   users: {
     user_name: "",
     user_email: "",
@@ -156,4 +162,11 @@ export const useFtm = create<ProductStore>((set) => ({
   fetchSeller: (name: string) => {
       set({ currSeller: name });
   },
+  setCurrSelected: (numArray: number[]) => {
+    set({ currSelected: numArray });
+  },
+  set_test_products: (proObj : hashMap ) => {
+    set({test_products : proObj })
+  }
+
 }));
