@@ -64,7 +64,7 @@ const BrowseFilter: React.FC = () => {
     const grouped = products.reduce<Record<number, Product[]>>((acc, item) => {
       const key = item.prod_id;
       if (!acc[key]) acc[key] = [];
-      const newObj  = { ...item, selected_quantity: 1 };
+      const newObj  = { ...item, selected_quantity: 1, final_price : item.prod_price };
       acc[key].push(newObj);
       return acc;
     }, {});

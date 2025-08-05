@@ -12,5 +12,5 @@ export type Product = {
 };
 
 export type hashMap = {
-  [key: number]: Array<Product & { selected_quantity: number }>
+  [key: number]: Array<Product & { selected_quantity: number, final_price : number }>
 }
