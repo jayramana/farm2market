@@ -185,7 +185,7 @@ const getNormieStats = async (user_id) => {
     return { success: false, message: err.message };
   }
 };
-const addOrder = async (buy_id, sell_id, pid, quantity,description,prod_name,prod_price,final_price,buyer_name,seller_name) => {
+const addOrder = async (buy_id, sell_id, pid, quantity,description,prod_name,prod_price,final_price) => {
   try {
     const [rows] = await db.query(
       "SELECT prod_quantity from product where prod_id = ?",
@@ -204,8 +204,8 @@ const addOrder = async (buy_id, sell_id, pid, quantity,description,prod_name,pro
     }
     if (curr_quantity >= quantity) {
       await db.query(
-        "INSERT INTO transactions(buyer_id,seller_id,prod_id,quantity,prod_price,final_price,description,prod_name,buyer_name,seller_name)VALUES(?,?,?,?,?,?,?,?,?,?)",
-        [buy_id, sell_id, pid, quantity, prod_price,final_price,description,prod_name,buyer_name,seller_name]
+        "INSERT INTO transactions(buyer_id,seller_id,prod_id,quantity,prod_price,final_price,description,prod_name)VALUES(?,?,?,?,?,?,?,?)",
+        [buy_id, sell_id, pid, quantity, prod_price,final_price,description,prod_name]
       );
 
       await db.query(

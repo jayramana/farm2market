@@ -122,15 +122,13 @@ const newOrder = async (req, res) => {
 
     const orders = payload.map((o, index) => {
       const buyer_id = parseInt(o?.buyer_id, 10);
-      const seller_id = parseInt(o?.seller_id, 10);
+      const seller_id = parseInt(o?.user_id, 10);
       const prod_id = parseInt(o?.prod_id, 10);
       const quantity = parseInt(o?.prod_quantity, 10);
       const description = o?.prod_description;
       const prod_name = o?.prod_name;
       const prod_price = Number(o?.prod_price);
       const final_price = Number(o?.final_price);
-      const buyer_name = o?.buyer_name;
-      const seller_name = o?.seller_name;
 
       const errors = [];
       if ([buyer_id, seller_id, prod_id, quantity,prod_price,final_price].some(Number.isNaN)) {
@@ -140,11 +138,12 @@ const newOrder = async (req, res) => {
         errors.push("quantity must be a positive integer");
       }
 
-      return { index, buyer_id, seller_id, prod_id, quantity, description,prod_name, prod_price, final_price, buyer_name, seller_name, errors };
+      return { index, buyer_id, seller_id, prod_id, quantity, description,prod_name, prod_price, final_price, errors };
     });
 
     const invalid = orders.filter(o => o.errors.length);
     if (invalid.length) {
+      console.log(invalid.forEach(item => console.log(item)))
       return res.status(400).json({
         message: "Invalid parameters in one or more orders",
         invalid: invalid.map(({ index, errors }) => ({ index, errors })),
@@ -154,13 +153,23 @@ const newOrder = async (req, res) => {
     const results = [];
     for (const o of orders) {
       try {
-        const r = await User.addOrder(o.buyer_id, o.seller_id, o.prod_id,o.description,o.prod_loc,o.prod_name,o.prod_price,o.prod_price,o.final_price);
+        const r = await User.addOrder(
+          o.buyer_id,
+          o.seller_id,
+          o.prod_id,
+          o.quantity,        
+          o.description,
+          o.prod_name,
+          o.prod_price,
+          o.final_price
+        );
         results.push({
           index: o.index,
           success: !!r?.success,
           message: r?.message || (r?.success ? "Created" : "Failed"),
         });
       } catch (e) {
+        console.log(e.message)
         results.push({ index: o.index, success: false, message: e?.message || "Unhandled error" });
       }
     }
