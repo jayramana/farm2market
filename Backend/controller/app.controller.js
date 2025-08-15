@@ -112,35 +112,72 @@ const getNormstats = async (req, res) => {
   }
 };
 
-//Add an order to the transaction table
 const newOrder = async (req, res) => {
   try {
-    const buyer_id = parseInt(req.body.buyer_id, 10);
-    const seller_id = parseInt(req.body.seller_id, 10);
-    const prod_id = parseInt(req.body.prod_id, 10);
-    const prod_quantity = parseInt(req.body.prod_quantity, 10);
+    const payload = Array.isArray(req.body) ? req.body : [req.body];
 
-    if (
-      [buyer_id, seller_id, prod_id, prod_quantity].some((n) => Number.isNaN(n))
-    ) {
-      return res.status(400).json({ message: "Invalid parameters" });
+    if (!Array.isArray(payload) || payload.length === 0) {
+      return res.status(400).json({ message: "Invalid payload: expected a non-empty array" });
     }
 
-    const fetchData = await User.addOrder(
-      buyer_id,
-      seller_id,
-      prod_id,
-      prod_quantity
-    );
-    if (!fetchData.success)
-      return res
-        .status(400)
-        .json({ message: "Failiure", message: fetchData.message });
-    return res.status(200).json({ message: "Success" });
+    const orders = payload.map((o, index) => {
+      const buyer_id = parseInt(o?.buyer_id, 10);
+      const seller_id = parseInt(o?.seller_id, 10);
+      const prod_id = parseInt(o?.prod_id, 10);
+      const quantity = parseInt(o?.prod_quantity, 10);
+      const description = o?.prod_description;
+      const prod_name = o?.prod_name;
+      const prod_price = Number(o?.prod_price);
+      const final_price = Number(o?.final_price);
+      const buyer_name = o?.buyer_name;
+      const seller_name = o?.seller_name;
+
+      const errors = [];
+      if ([buyer_id, seller_id, prod_id, quantity,prod_price,final_price].some(Number.isNaN)) {
+        errors.push("buyer_id, seller_id, prod_id, quantity must be numbers");
+      }
+      if (!Number.isNaN(quantity) && (!Number.isInteger(quantity) || quantity <= 0)) {
+        errors.push("quantity must be a positive integer");
+      }
+
+      return { index, buyer_id, seller_id, prod_id, quantity, description,prod_name, prod_price, final_price, buyer_name, seller_name, errors };
+    });
+
+    const invalid = orders.filter(o => o.errors.length);
+    if (invalid.length) {
+      return res.status(400).json({
+        message: "Invalid parameters in one or more orders",
+        invalid: invalid.map(({ index, errors }) => ({ index, errors })),
+      });
+    }
+
+    const results = [];
+    for (const o of orders) {
+      try {
+        const r = await User.addOrder(o.buyer_id, o.seller_id, o.prod_id,o.description,o.prod_loc,o.prod_name,o.prod_price,o.prod_price,o.final_price);
+        results.push({
+          index: o.index,
+          success: !!r?.success,
+          message: r?.message || (r?.success ? "Created" : "Failed"),
+        });
+      } catch (e) {
+        results.push({ index: o.index, success: false, message: e?.message || "Unhandled error" });
+      }
+    }
+
+    const successes = results.filter(r => r.success).length;
+    const failures = results.length - successes;
+
+    return res.status(failures ? 207 : 201).json({
+      message: failures ? "Partially processed" : "All orders created",
+      counts: { total: results.length, successes, failures },
+      results,
+    });
   } catch (error) {
-    return res.status(500).json({ message: "Failiure", err: error.message });
+    return res.status(500).json({ message: "Failure", error: error.message });
   }
 };
+
 
 // Edit Product Details
 const editProdstats = async (req, res) => {
