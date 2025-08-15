@@ -2,7 +2,7 @@ import { create } from "zustand";
 import axios from "axios";
 import type { hashMap, Product } from "../types/product";
 import type { User } from "../types/user";
-import type { Orders } from "../types/transactions";
+import type { Transactions } from "../types/transactions";
 
 type ProductStore = {
   id: number;
@@ -12,7 +12,7 @@ type ProductStore = {
   prod_sellers: string[];
   locations: string[];
   users: User;
-  orders: Orders[];
+  orders: Transactions[];
   currSelected: number[];
   currView: number;
   currCat: string;
@@ -43,7 +43,8 @@ type ProductStore = {
   fetchCat: (name: string) => void;
   fetchSeller: (name: string) => void;
   setCurrSelected: (numArray: number[]) => void;
-  set_test_products: (proObj : hashMap) => void;
+  set_test_products: (proObj: hashMap) => void;
+  addOrder: (order: Product[]) => void;
 };
 
 export const useFtm = create<ProductStore>((set) => ({
@@ -167,6 +168,12 @@ export const useFtm = create<ProductStore>((set) => ({
   },
   set_test_products: (proObj : hashMap ) => {
     set({test_products : proObj })
+  },
+  addOrder: async(order: Transactions[]) => {
+    const request = await axios.post("http://localhost:3000/api/f2m/product/newOrder", order);
+    console.log(request.data);
   }
+
+
 
 }));

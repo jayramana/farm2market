@@ -1,4 +1,4 @@
-export type Orders = {
+export type Transactions = {
   transaction_id: number;
   buyer_id: number;
   seller_id: number;

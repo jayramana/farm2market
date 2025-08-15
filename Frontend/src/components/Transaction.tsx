@@ -1,7 +1,6 @@
 import React,{useState, useEffect} from 'react'
 import { useFtm } from '../store/useFtm'
-import type { Product } from '../types/product';
-
+import type {Transactions} from "../types/transactions"
 const Transaction = () => {
   const { currSelected, products } = useFtm();
   const [prod, setProd] = useState<Product[]>([]);

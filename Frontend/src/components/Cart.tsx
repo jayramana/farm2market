@@ -2,7 +2,7 @@ import React, { use, useEffect, useState } from "react";
 import { useFtm } from "../store/useFtm";
 
 const Cart = () => {
-  const { currSelected, test_products } = useFtm();
+  const { currSelected, test_products, addOrder } = useFtm();
   const [temp, setTemp] = useState(1); // Trigger re render
 
   const addQuantity = (id: number) => {
@@ -23,6 +23,11 @@ const Cart = () => {
 
     setTemp(arr[0].selected_quantity);
   };
+
+  const confirmOrder = () => {
+    const arr = currSelected.flatMap((item) => test_products[item] ?? []);
+    addOrder(arr);
+  };
   return (
     <main className="flex flex-col gap-4 pl-10 h-screen pt-10">
       <div className="w-[50%] grid grid-cols-1">
@@ -35,14 +40,20 @@ const Cart = () => {
               <div className="flex gap-2">
                 <button onClick={() => subQuantity(prod.prod_id)}>-</button>
                 <p>{prod.selected_quantity}</p>
-                <button onClick={()=> addQuantity(prod.prod_id)}>+</button>
+                <button onClick={() => addQuantity(prod.prod_id)}>+</button>
               </div>
-              <p>{Math.round(prod.final_price * 100)/100}</p>
+              <p>{Math.round(prod.final_price * 100) / 100}</p>
             </div>
           ))
         )}
       </div>
-      <button type="button" className=" w-fit px-4 py-2 bg-black text-white rounded-md">Confirm Order</button>
+      <button
+        type="button"
+        className=" w-fit px-4 py-2 bg-black text-white rounded-md"
+        onClick={confirmOrder}
+      >
+        Confirm Order
+      </button>
     </main>
   );
 };
