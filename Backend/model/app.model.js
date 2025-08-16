@@ -185,27 +185,22 @@ const getNormieStats = async (user_id) => {
     return { success: false, message: err.message };
   }
 };
-const addOrder = async (buy_id, sell_id, pid, quantity,description,prod_name,prod_price,final_price) => {
+const addOrder = async (buy_id, sell_id, pid, quantity,description,prod_name,prod_price,final_price,buyer_name,seller_name) => {
   try {
     const [rows] = await db.query(
       "SELECT prod_quantity from product where prod_id = ?",
       [pid]
     );
 
-    const [rows1] = await db.query(
-      "SELECT prod_price from product where prod_id = ? ",
-      [pid]
-    );
 
     const curr_quantity = rows[0]?.prod_quantity || 0;
-    const curr_price = rows1[0]?.prod_price || 0.0;
     if (curr_quantity < quantity) {
       return { success: false, message: "Insufficient stock" };
     }
     if (curr_quantity >= quantity) {
       await db.query(
-        "INSERT INTO transactions(buyer_id,seller_id,prod_id,quantity,prod_price,final_price,description,prod_name)VALUES(?,?,?,?,?,?,?,?)",
-        [buy_id, sell_id, pid, quantity, prod_price,final_price,description,prod_name]
+        "INSERT INTO transactions(buyer_id,seller_id,prod_id,quantity,prod_price,final_price,description,prod_name,buyer_name,seller_name)VALUES(?,?,?,?,?,?,?,?,?,?)",
+        [buy_id, sell_id, pid, quantity, prod_price,final_price,description,prod_name,buyer_name,seller_name]
       );
 
       await db.query(
