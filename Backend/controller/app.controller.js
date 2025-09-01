@@ -124,11 +124,13 @@ const newOrder = async (req, res) => {
       const buyer_id = parseInt(o?.buyer_id, 10);
       const seller_id = parseInt(o?.user_id, 10);
       const prod_id = parseInt(o?.prod_id, 10);
-      const quantity = parseInt(o?.prod_quantity, 10);
+      const quantity = parseInt(o?.selected_quantity, 10);
       const description = o?.prod_description;
       const prod_name = o?.prod_name;
       const prod_price = Number(o?.prod_price);
       const final_price = Number(o?.final_price);
+      const buyer_name = o?.buyer_name;
+      const seller_name = o?.Seller_name;
 
       const errors = [];
       if ([buyer_id, seller_id, prod_id, quantity,prod_price,final_price].some(Number.isNaN)) {
@@ -138,7 +140,7 @@ const newOrder = async (req, res) => {
         errors.push("quantity must be a positive integer");
       }
 
-      return { index, buyer_id, seller_id, prod_id, quantity, description,prod_name, prod_price, final_price, errors };
+      return { index, buyer_id, seller_id, prod_id, quantity, description,prod_name, prod_price, final_price,buyer_name,seller_name, errors };
     });
 
     const invalid = orders.filter(o => o.errors.length);
@@ -161,7 +163,9 @@ const newOrder = async (req, res) => {
           o.description,
           o.prod_name,
           o.prod_price,
-          o.final_price
+          o.final_price,
+          o.buyer_name,
+          o.seller_name
         );
         results.push({
           index: o.index,
