@@ -287,21 +287,19 @@ const getAllLocations = async () => {
 };
 
 //get All user details
-
 const getUserDetails = async (id) => {
   try {
     const [rows] = await db.query(
-      "SELECT user_name,user_email,user_phone,user_loc,created_at FROM users WHERE user_id = ?",
+      "SELECT user_name,user_email,user_role,user_phone,user_loc,created_at FROM users WHERE user_id = ?",
       [id]
     );
 
     if (rows.length === 0) {
-      return { success: false, message: "No details found" };
+      return null;
     }
-    return { success: true, data: rows[0] };
+    return rows[0]; 
   } catch (error) {
-    console.error("getUserDetails error:", error);
-    return { success: false, message: error.message };
+    throw new Error(error.message)
   }
 };
 
