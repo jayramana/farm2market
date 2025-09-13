@@ -44,7 +44,9 @@ const Order = () => {
     }
   }, [orders, loadingOrders]);
 
-  console.log(allorder);
+  allorder.map((item) => {
+    console.log(item.IS_DELIVERED);
+  });
 
   if (loadingOrders) return <p>Loading orders…</p>;
   if (errorOrders) return <p>Error: {errorOrders}</p>;
@@ -65,15 +67,24 @@ const Order = () => {
         {grouped_by_Date.map(([date, items]) => (
           <div key={date}>
             <p>{date}</p>
-            {items.map((item: Transactions) => (
-              <div>
-                <p>Buyer Name : {item.buyer_name}</p>
-                <p>Seller Name : {item.seller_name}</p>
-                <p>Product Name : {item.prod_name}</p>
-                <p>Product Price : {item.prod_price}</p>
-                <p>Final Price : {item.final_price}</p>
-              </div>
-            ))}
+            <div className="flex flex-col gap-2">
+              {items.map((item: Transactions) => (
+                <div>
+                  <p>Buyer Name : {item.buyer_name}</p>
+                  <p>Seller Name : {item.seller_name}</p>
+                  <p>Product Name : {item.prod_name}</p>
+                  <p>Product Price : {item.prod_price}</p>
+                  <p>Final Price : {item.final_price}</p>
+                  <p
+                    className={
+                      item.IS_DELIVERED ? "text-green-600" : "text-red-600"
+                    }
+                  >
+                    {item.IS_DELIVERED ? "Delivered" : "Not Delivered"}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         ))}
       </div>
