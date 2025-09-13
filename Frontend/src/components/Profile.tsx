@@ -5,22 +5,21 @@ import type { User } from "../types/user";
 const Profile = () => {
   const { id, users, fetchUserDetails, loadingUsers, errorUsers } = useFtm();
 
-  const [detail, setDetail] = useState<User>();
 
   useEffect(() => {
-    const fetchAndSet = async () => {
-      try {
-        fetchUserDetails(id);
-        setDetail(users);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    if (id) {
+      fetchUserDetails(id)
+    }
+  }, [id,users, fetchUserDetails]);
 
-    fetchAndSet();
-  }, [id, users, fetchUserDetails]);
 
-  return (<main>{detail ? <p>{detail.user_name}</p> : <p>Null</p>}</main>)
+  return (
+    <main className="h-screen px-12 py-4">
+      <p>{users?.user_name}</p>
+      <p>{users.user_email}</p>
+      <p>{users.user_phone}</p>
+      <p>{users.user_role}</p>
+  </main>)
 };
 
 export default Profile;

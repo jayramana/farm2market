@@ -10,4 +10,5 @@ export type Transactions = {
   prod_name: string;
   buyer_name: number;
   seller_name: string;
+  IS_DELIVERED: boolean;
 };

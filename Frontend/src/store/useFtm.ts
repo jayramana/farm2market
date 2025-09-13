@@ -17,7 +17,6 @@ type ProductStore = {
   currView: number;
   currCat: string;
   currSeller: string;
-  
 
   loadingProd: boolean;
   loadingCat: boolean;
@@ -48,17 +47,18 @@ type ProductStore = {
 };
 
 export const useFtm = create<ProductStore>((set) => ({
-  id: 2,
+  id: 3,
   products: [],
-  test_products : {},
+  test_products: {},
   prod_categories: [],
   prod_sellers: [],
   orders: [],
   locations: [],
-  currSelected : [],
+  currSelected: [],
   users: {
     user_name: "",
     user_email: "",
+    user_role:"",
     user_phone: "",
     user_loc: "",
     created_at: new Date(),
@@ -66,7 +66,7 @@ export const useFtm = create<ProductStore>((set) => ({
   currView: -1,
   currCat: "",
   currSeller: "",
-  cart : [],
+  cart: [],
 
   loadingProd: false,
   loadingCat: false,
@@ -140,7 +140,22 @@ export const useFtm = create<ProductStore>((set) => ({
       const res = await axios.get(
         `http://localhost:3000/api/f2m/product/users/details/${id}`
       );
-      set({ users: res.data.data, loadingUsers: false });
+
+      const user = res.data.data;
+
+      if (!user) {
+        set({
+          users: {
+            user_name: "",
+            user_email: "",
+            user_role: "",
+            user_loc: "",
+            user_phone: "",
+            created_at: new Date(),
+          },
+        });
+      }
+      set({ users: user, loadingUsers: false });
     } catch (error: any) {
       set({ errorUsers: error.message, loadingUsers: false });
     }
@@ -158,22 +173,22 @@ export const useFtm = create<ProductStore>((set) => ({
     }
   },
   fetchCat: (name: string) => {
-      set({ currCat: name });
+    set({ currCat: name });
   },
   fetchSeller: (name: string) => {
-      set({ currSeller: name });
+    set({ currSeller: name });
   },
   setCurrSelected: (numArray: number[]) => {
     set({ currSelected: numArray });
   },
-  set_test_products: (proObj : hashMap ) => {
-    set({test_products : proObj })
+  set_test_products: (proObj: hashMap) => {
+    set({ test_products: proObj });
   },
-  addOrder: async(order: Transactions[]) => {
-    const request = await axios.post("http://localhost:3000/api/f2m/product/newOrder", order);
+  addOrder: async (order: Transactions[]) => {
+    const request = await axios.post(
+      "http://localhost:3000/api/f2m/product/newOrder",
+      order
+    );
     console.log(request.data);
-  }
-
-
-
+  },
 }));
