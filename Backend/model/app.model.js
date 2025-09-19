@@ -1,3 +1,12 @@
+// skeleton
+
+// const func_name = async (p1, p2) => {
+//   const [rows] = await db.query("query", [p1, p2])
+//   //Error Check
+//   // No error then return data
+// }
+
+
 const db = require("../config/db.js");
 
 const createUser = async (
@@ -16,6 +25,13 @@ const createUser = async (
     throw new Error("Error occured while creating a user!");
   return { success: true };
 };
+
+const checkUserExists = async (name, email,password) => {
+  const [rows] = await db.query("SELECT * FROM USERS WHERE user_name = ? AND user_email = ? AND user_enpass = ?", [name, email, password]);
+  if (rows.length == 0) throw new Error("Not Found!");
+  return rows[0];
+}
+
 const getAllUsers = async () => {
   const [rows] = await db.query("SELECT * FROM USERS");
   if (rows.length == 0) throw new Error("No data Found!");
@@ -320,5 +336,6 @@ module.exports = {
   getAllCategories,
   getAllSellers,
   getAllLocations,
-  getUserDetails
+  getUserDetails,
+  checkUserExists
 };

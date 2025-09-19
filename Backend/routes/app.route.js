@@ -14,7 +14,8 @@ const {
   allCategories,
   allLocations,
   allSellers,
-getUserdetails
+  getUserdetails,
+  checkUser
 } = require("../controller/app.controller.js");
 
 // Check the app.model.js before finalizing the project
@@ -22,6 +23,8 @@ getUserdetails
 router.get("/health", (req, res) => {
   res.send("Backend is running!");
 });
+
+router.get("/user/check", checkUser); //Ok
 
 router.get("/product/allCategories", allCategories); //Ok
 router.get("/product/allSellers", allSellers); //Ok

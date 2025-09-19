@@ -58,7 +58,7 @@ const getUserOrder = async (req, res) => {
     const id = parseInt(req.params.id, 10);
     if (Number.isNaN(id)) return res.status();
     const result = await User.getUserTrans(id);
-    return res.status(200).json({success : true, data : result });
+    return res.status(200).json({ success: true, data: result });
   } catch (error) {
     return res.status(500).json({ err: error.message });
   }
@@ -117,7 +117,9 @@ const newOrder = async (req, res) => {
     const payload = Array.isArray(req.body) ? req.body : [req.body];
 
     if (!Array.isArray(payload) || payload.length === 0) {
-      return res.status(400).json({ message: "Invalid payload: expected a non-empty array" });
+      return res
+        .status(400)
+        .json({ message: "Invalid payload: expected a non-empty array" });
     }
 
     const orders = payload.map((o, index) => {
@@ -133,19 +135,39 @@ const newOrder = async (req, res) => {
       const seller_name = o?.Seller_name;
 
       const errors = [];
-      if ([buyer_id, seller_id, prod_id, quantity,prod_price,final_price].some(Number.isNaN)) {
+      if (
+        [buyer_id, seller_id, prod_id, quantity, prod_price, final_price].some(
+          Number.isNaN
+        )
+      ) {
         errors.push("buyer_id, seller_id, prod_id, quantity must be numbers");
       }
-      if (!Number.isNaN(quantity) && (!Number.isInteger(quantity) || quantity <= 0)) {
+      if (
+        !Number.isNaN(quantity) &&
+        (!Number.isInteger(quantity) || quantity <= 0)
+      ) {
         errors.push("quantity must be a positive integer");
       }
 
-      return { index, buyer_id, seller_id, prod_id, quantity, description,prod_name, prod_price, final_price,buyer_name,seller_name, errors };
+      return {
+        index,
+        buyer_id,
+        seller_id,
+        prod_id,
+        quantity,
+        description,
+        prod_name,
+        prod_price,
+        final_price,
+        buyer_name,
+        seller_name,
+        errors,
+      };
     });
 
-    const invalid = orders.filter(o => o.errors.length);
+    const invalid = orders.filter((o) => o.errors.length);
     if (invalid.length) {
-      console.log(invalid.forEach(item => console.log(item)))
+      console.log(invalid.forEach((item) => console.log(item)));
       return res.status(400).json({
         message: "Invalid parameters in one or more orders",
         invalid: invalid.map(({ index, errors }) => ({ index, errors })),
@@ -159,7 +181,7 @@ const newOrder = async (req, res) => {
           o.buyer_id,
           o.seller_id,
           o.prod_id,
-          o.quantity,        
+          o.quantity,
           o.description,
           o.prod_name,
           o.prod_price,
@@ -173,12 +195,16 @@ const newOrder = async (req, res) => {
           message: r?.message || (r?.success ? "Created" : "Failed"),
         });
       } catch (e) {
-        console.log(e.message)
-        results.push({ index: o.index, success: false, message: e?.message || "Unhandled error" });
+        console.log(e.message);
+        results.push({
+          index: o.index,
+          success: false,
+          message: e?.message || "Unhandled error",
+        });
       }
     }
 
-    const successes = results.filter(r => r.success).length;
+    const successes = results.filter((r) => r.success).length;
     const failures = results.length - successes;
 
     return res.status(failures ? 207 : 201).json({
@@ -190,7 +216,6 @@ const newOrder = async (req, res) => {
     return res.status(500).json({ message: "Failure", error: error.message });
   }
 };
-
 
 // Edit Product Details
 const editProdstats = async (req, res) => {
@@ -245,9 +270,27 @@ const allLocations = async (req, res) => {
 
 const getUserdetails = async (req, res) => {
   try {
-    const  id = parseInt(req.params.id,10);
+    const id = parseInt(req.params.id, 10);
     const fetchData = await User.getUserDetails(id);
 
+    if (fetchData.length === 0)
+      return res.status(400).json({ success: false, data: "None Found!!" });
+    return res.status(200).json({ success: true, data: fetchData });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, data: error });
+  }
+};
+
+//Check User Exists
+
+const checkUser = async (req, res) => {
+  try {
+    const name = req.body.user_name;
+    const email = req.body.user_email;
+    const pass = req.body.user_enpass;
+
+    const fetchData = await User.checkUserExists(name, email, pass);
     if (fetchData.length === 0)
       return res.status(400).json({ success: false, data: "None Found!!" });
     return res.status(200).json({ success: true, data: fetchData });
@@ -269,5 +312,6 @@ module.exports = {
   allCategories,
   allSellers,
   allLocations,
-  getUserdetails
+  getUserdetails,
+  checkUser
 };
