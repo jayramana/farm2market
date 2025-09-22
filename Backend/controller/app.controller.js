@@ -299,6 +299,18 @@ const checkUser = async (req, res) => {
   }
 };
 
+//Create a User
+const create_User = async (req, res) => {
+  try {
+    const { user_name, user_email, user_enpass, user_role, user_phone, user_loc } = req.body;
+
+    const insertData = await User.createUser(user_name, user_email, user_enpass, user_role, user_phone, user_loc);
+    return res.status(200).json({success : true, data : insertData.insertId})
+  } catch (error) {
+    return res.status(500).json({ success: false, data: error.message });
+  }
+}
+
 module.exports = {
   getAllProducts,
   addProduct,
@@ -312,5 +324,6 @@ module.exports = {
   allSellers,
   allLocations,
   getUserdetails,
-  checkUser
+  checkUser,
+  create_User
 };

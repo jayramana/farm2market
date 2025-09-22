@@ -15,7 +15,8 @@ const {
   allLocations,
   allSellers,
   getUserdetails,
-  checkUser
+  checkUser,
+  create_User
 } = require("../controller/app.controller.js");
 
 // Check the app.model.js before finalizing the project
@@ -25,6 +26,7 @@ router.get("/health", (req, res) => {
 });
 
 router.post("/user/check", checkUser); //Ok
+router.post("/user/create",create_User) // Ok
 
 router.get("/product/allCategories", allCategories); //Ok
 router.get("/product/allSellers", allSellers); //Ok

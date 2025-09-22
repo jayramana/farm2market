@@ -23,7 +23,7 @@ const createUser = async (
   );
   if (rows.affectedRows == 0)
     throw new Error("Error occured while creating a user!");
-  return { success: true };
+  return rows;
 };
 
 const checkUserExists = async (name, email,password) => {
