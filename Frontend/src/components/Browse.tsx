@@ -133,7 +133,7 @@ const BrowseFilter: React.FC = () => {
             <div
               key={prod.prod_id}
               className="border p-4 rounded shadow-sm"
-              
+              onClick={()=>redirect}
             >
               <p>
                 <strong>Name:</strong> {prod.prod_name}
