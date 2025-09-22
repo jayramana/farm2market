@@ -295,7 +295,6 @@ const checkUser = async (req, res) => {
       return res.status(400).json({ success: false, data: "None Found!!" });
     return res.status(200).json({ success: true, data: fetchData });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ success: false, data: error });
   }
 };

@@ -24,7 +24,7 @@ router.get("/health", (req, res) => {
   res.send("Backend is running!");
 });
 
-router.get("/user/check", checkUser); //Ok
+router.post("/user/check", checkUser); //Ok
 
 router.get("/product/allCategories", allCategories); //Ok
 router.get("/product/allSellers", allSellers); //Ok
