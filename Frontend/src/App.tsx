@@ -8,6 +8,7 @@ import BrowseviaCate from "./components/BrowseviaCate";
 import BrowseviaSellers from "./components/BrowseviaSellers";
 import Cart from "./components/Cart";
 import Login from "./components/Login";
+import Register from "./components/Register";
 
 function App() {
   return (
@@ -21,7 +22,8 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/group-by-categories" element={<BrowseviaCate />} />
         <Route path="/group-by-topsellers" element={<BrowseviaSellers />} />
-        <Route path="/login" element={<Login/>} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register/>} />
       </Routes>
     </main>
   );
