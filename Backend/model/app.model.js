@@ -6,7 +6,6 @@
 //   // No error then return data
 // }
 
-
 const db = require("../config/db.js");
 
 const createUser = async (
@@ -26,11 +25,14 @@ const createUser = async (
   return rows;
 };
 
-const checkUserExists = async (name, email,password) => {
-  const [rows] = await db.query("SELECT * FROM USERS WHERE user_name = ? AND user_email = ? AND user_enpass = ?", [name, email, password]);
+const checkUserExists = async (name, email, password) => {
+  const [rows] = await db.query(
+    "SELECT * FROM USERS WHERE user_name = ? AND user_email = ? AND user_enpass = ?",
+    [name, email, password]
+  );
   if (rows.length == 0) throw new Error("Not Found!");
   return rows[0];
-}
+};
 
 const getAllUsers = async () => {
   const [rows] = await db.query("SELECT * FROM USERS");
@@ -201,13 +203,23 @@ const getNormieStats = async (user_id) => {
     return { success: false, message: err.message };
   }
 };
-const addOrder = async (buy_id, sell_id, pid, quantity,description,prod_name,prod_price,final_price,buyer_name,seller_name) => {
+const addOrder = async (
+  buy_id,
+  sell_id,
+  pid,
+  quantity,
+  description,
+  prod_name,
+  prod_price,
+  final_price,
+  buyer_name,
+  seller_name
+) => {
   try {
     const [rows] = await db.query(
       "SELECT prod_quantity from product where prod_id = ?",
       [pid]
     );
-
 
     const curr_quantity = rows[0]?.prod_quantity || 0;
     if (curr_quantity < quantity) {
@@ -216,7 +228,18 @@ const addOrder = async (buy_id, sell_id, pid, quantity,description,prod_name,pro
     if (curr_quantity >= quantity) {
       await db.query(
         "INSERT INTO transactions(buyer_id,seller_id,prod_id,quantity,prod_price,final_price,description,prod_name,buyer_name,seller_name)VALUES(?,?,?,?,?,?,?,?,?,?)",
-        [buy_id, sell_id, pid, quantity, prod_price,final_price,description,prod_name,buyer_name,seller_name]
+        [
+          buy_id,
+          sell_id,
+          pid,
+          quantity,
+          prod_price,
+          final_price,
+          description,
+          prod_name,
+          buyer_name,
+          seller_name,
+        ]
       );
 
       await db.query(
@@ -313,12 +336,66 @@ const getUserDetails = async (id) => {
     if (rows.length === 0) {
       return null;
     }
-    return rows[0]; 
+    return rows[0];
   } catch (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 };
 
+// Insert a product to a user's wishlist
+const addTowishlist = async (user_id, prod_id) => {
+  try {
+    const [rows] = await db.query(
+      "INSERT INTO WISHLIST(user_id,prod_id) Values(?,?)",
+      [user_id, prod_id]
+    );
+    if (rows.affectedRows === 0) return rows.affectedRows;
+    return rows.insertId;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+// Retrieve all wishlist items of a user
+
+const retrieveWishlist = async (id) => {
+  try {
+    const [rows] = await db.query("Select prod_name,prod_category,prod_price,prod_description,created_at,Seller_name from wishlist w join product p on w.prod_id = p.prod_id where w.user_id = ?",[id]);
+    if (rows.length == 0) {
+      return rows.length;
+    }
+    return rows;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+// Delete an item from the wishlist
+
+const delete_one_wishlist = async (id) => {
+  try {
+    const [rows] = await db.query(
+      "DELETE FROM wishlist w where w.wishlist_id = ?",
+      [id]
+    );
+    return rows.affectedRows;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+// Delete all items from a user's wishlist
+const delete_All_from_wishlist = async (user_id) => {
+  try {
+    const [rows] = await db.query(
+      "DELETE FROM WISHLIST w where w.user_id = ?",
+      [user_id]
+    );
+    return rows.affectedRows;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 
 module.exports = {
   createUser,
@@ -337,5 +414,9 @@ module.exports = {
   getAllSellers,
   getAllLocations,
   getUserDetails,
-  checkUserExists
+  checkUserExists,
+  addTowishlist,
+  retrieveWishlist,
+  delete_one_wishlist,
+  delete_All_from_wishlist
 };

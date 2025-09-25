@@ -311,6 +311,50 @@ const create_User = async (req, res) => {
   }
 }
 
+
+// Add to wishlist
+const addto_Wishlist = async (req, res) => {
+  try {
+    const { user_id, prod_id } = req.body;
+    const insertData = await User.addTowishlist(user_id, prod_id);
+    return res.status(200).json({success : true, data : insertData})
+  } catch (error) {
+    return res.status(500).json({success : false, data : error.message});
+  }
+}
+
+const retrieve_from_wishList = async (req, res) => {
+  try {
+    const _id = req.params.id;
+    const fetchData = await User.retrieveWishlist(_id);
+    return res.status(200).json({ success: true, data: fetchData });
+  } catch (error) {
+    return res.status(500).json({ success: false, data: error.message });
+  }
+} 
+
+const delete_from_wishlist_one = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const deleteData = await User.delete_one_wishlist(id);
+    if (deleteData === 0) return res.status(200).json({ success: true, message: "No data was deleted" });
+    return res.status(200).json({success : true,message : "Data Successfully deleted"}) 
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Error has occured" });
+  }
+}
+
+const delete_from_wishlist_all = async (req, res) => {
+  try {
+    const  user_id  = req.params.id;
+    const deleteData = await User.delete_All_from_wishlist(user_id);
+    if (deleteData === 0) return res.status(200).json({ success: true, data: "No Data Deleted" })
+    return res.status(200).json({ status: true, message: "Data of user is deleted" });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
+
 module.exports = {
   getAllProducts,
   addProduct,
@@ -325,5 +369,9 @@ module.exports = {
   allLocations,
   getUserdetails,
   checkUser,
-  create_User
+  create_User,
+  addto_Wishlist,
+  retrieve_from_wishList,
+  delete_from_wishlist_one,
+  delete_from_wishlist_all
 };
