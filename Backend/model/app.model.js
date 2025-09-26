@@ -360,7 +360,7 @@ const addTowishlist = async (user_id, prod_id) => {
 
 const retrieveWishlist = async (id) => {
   try {
-    const [rows] = await db.query("Select prod_name,prod_category,prod_price,prod_description,created_at,Seller_name from wishlist w join product p on w.prod_id = p.prod_id where w.user_id = ?",[id]);
+    const [rows] = await db.query("Select w.wishlist_id,prod_name,prod_category,prod_price,prod_description,created_at,Seller_name from wishlist w join product p on w.prod_id = p.prod_id where w.user_id = ?",[id]);
     if (rows.length == 0) {
       return rows.length;
     }
