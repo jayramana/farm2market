@@ -9,6 +9,8 @@ import BrowseviaSellers from "./components/BrowseviaSellers";
 import Cart from "./components/Cart";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import Wishlist from "./components/WishList"
+
 
 function App() {
   return (
@@ -23,7 +25,8 @@ function App() {
         <Route path="/group-by-categories" element={<BrowseviaCate />} />
         <Route path="/group-by-topsellers" element={<BrowseviaSellers />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register/>} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/wishlist" element={<Wishlist />} />
       </Routes>
     </main>
   );

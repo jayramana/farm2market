@@ -1,0 +1,11 @@
+export { default as Home } from "./Home";
+export { default as Order } from "./Orders";
+export { default as Profile } from "./Profile";
+export { default as BrowseFilter } from "./Browse";
+export { default as IndividualProduct } from "./IndividualProduct";
+export { default as BrowseviaCate } from "./BrowseviaCate";
+export { default as BrowseviaSellers } from "./BrowseviaSellers";
+export { default as Cart } from "./Cart";
+export { default as Login } from "./Login";
+export { default as Register } from "./Register";
+export { default as WishList } from "./WishList";

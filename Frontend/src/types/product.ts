@@ -12,6 +12,15 @@ export type Product = {
   prod_loc: string;
 };
 
+export type Wishlist = {
+  wishlist_id : number,
+  prod_name: string,
+  prod_category: string,
+  prod_price: number,
+  created_at: Date,
+  Seller_name: string
+}
+
 export type hashMap = {
   [key: number]: Array<Product & { selected_quantity: number, final_price : number }>
 }

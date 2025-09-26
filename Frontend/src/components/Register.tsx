@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 const Register = () => {
@@ -8,7 +8,7 @@ const Register = () => {
   const [role, setRole] = useState<string>("");
   const [num, setNum] = useState<string>("");
   const [loc, setLoc] = useState<string>("");
-  const [errmsg, setErrmsg] = useState<string>("");
+  // const [errmsg, setErrmsg] = useState<string>("");
 
   const [nameErr, setNameErr] = useState<boolean>(false);
   const [emailErr, setEmailErr] = useState<boolean>(false);
@@ -58,7 +58,7 @@ const Register = () => {
       const new_User = await axios.post("http://localhost:3000/api/f2m/user/create", { user_name: name, user_email: email, user_enpass: pass, user_role: role, user_phone: str_to_numb, user_loc : loc })
       console.log(new_User);
       console.log(name, email, pass,role,num,loc);
-    } catch (err) {
+    } catch (err : any) {
       console.log(err.message);
     }
   };
