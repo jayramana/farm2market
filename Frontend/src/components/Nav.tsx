@@ -15,6 +15,9 @@ const Nav = () => {
   }, [users.user_name,loadingUsers]);
   const Navigate = useNavigate();
 
+  const Home = () => {
+    Navigate("/")
+  }
   const toOrders = () => {
     Navigate("/orders");
   };
@@ -24,10 +27,10 @@ const Nav = () => {
 
   return (
     <main className="col-span-2 flex justify-between px-12 py-4">
-      <p>Farm2Market</p>
+      <p onClick={Home} className="hover:cursor-pointer">Farm2Market</p>
 
-      <div>
-        <span onClick={toOrders}>Orders</span>
+      <div className="flex gap-2">
+        <span onClick={toOrders} className="hover:cursor-pointer">Orders</span>
         <span>Report Issues</span>
       </div>
       <span onClick={toProfile}>{name}</span>

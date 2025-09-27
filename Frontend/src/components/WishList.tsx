@@ -17,25 +17,29 @@ const WishList = () => {
     retrieve_Items();
   }, [id]);
 
-  const delete_item = async(id: number) => {
+  const delete_item = async (id: number) => {
     try {
-      const data = await axios.delete(`http://localhost:3000/api/f2m/user/wishlist/delete/${id}`)
-      console.log(data)
-      setList((prev)=> prev.filter((item)=> item.wishlist_id != id))
+      const data = await axios.delete(
+        `http://localhost:3000/api/f2m/user/wishlist/delete/${id}`
+      );
+      console.log(data);
+      setList((prev) => prev.filter((item) => item.wishlist_id != id));
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
-  const delete_All = async() => {
+  const delete_All = async () => {
     try {
-      const data = await axios.delete(`http://localhost:3000/api/f2m/user/wishlist/deleteAll/${id}`);
-      setList([])
-      console.log(data)
+      const data = await axios.delete(
+        `http://localhost:3000/api/f2m/user/wishlist/deleteAll/${id}`
+      );
+      setList([]);
+      console.log(data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   return (
     <main className="px-12 py-4">
@@ -53,18 +57,31 @@ const WishList = () => {
 
       <div>
         <p>{list?.length} items</p>
-        <div className="flex flex-col gap-4">
-          {list.map((li) => (
-            <div key={li.wishlist_id} className="border-b-2 border-b-black">
-              <p>{li.prod_name}</p>
-              <p>{li.prod_price}</p>
-              <p>{li.prod_category}</p>
-              <p>{li.Seller_name}</p>
-              <p>{li.created_at instanceof Date ? li.created_at.toLocaleString() : li.created_at}</p>
-              <button className="bg-red-500 text-white px-2 py-1 rounded-lg" onClick={() => delete_item(li.wishlist_id)}>Delete Item</button>
-            </div>
-          ))}
-        </div>
+        {list.length > 0 ? (
+          <div className="flex flex-col gap-4">
+            {list.map((li) => (
+              <div key={li.wishlist_id} className="border-b-2 border-b-black">
+                <p>{li.prod_name}</p>
+                <p>{li.prod_price}</p>
+                <p>{li.prod_category}</p>
+                <p>{li.Seller_name}</p>
+                <p>
+                  {li.created_at instanceof Date
+                    ? li.created_at.toLocaleString()
+                    : li.created_at}
+                </p>
+                <button
+                  className="bg-red-500 text-white px-2 py-1 rounded-lg"
+                  onClick={() => delete_item(li.wishlist_id)}
+                >
+                  Delete Item
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No items in the wishlist</p>
+        )}
       </div>
     </main>
   );

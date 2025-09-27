@@ -15,6 +15,9 @@ const LeftMenu = () => {
     const redirectoprofile = () => {
         navigate("/profile");
     }
+  const redirectowishlist = () => {
+    navigate("/wishlist");
+  }
 
   return (
     <div className="relative">
@@ -36,6 +39,7 @@ const LeftMenu = () => {
         <ul className="space-y-4">
           <li className="hover:text-gray-300 cursor-pointer" onClick={redirectosearch}>Browse</li>
           <li className="hover:text-gray-300 cursor-pointer" onClick={redirectorders}>My Orders</li>
+          <li className="hover:text-gray-300 cursor-pointer" onClick={redirectowishlist}>My Wishlist</li>
           <li className="hover:text-gray-300 cursor-pointer" onClick={redirectoprofile}>My Profile</li>
         </ul>
       </div>

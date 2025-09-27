@@ -52,14 +52,6 @@ const Order = () => {
   if (errorOrders) return <p>Error: {errorOrders}</p>;
 
   return (
-    // <div>
-    //   {allorder.map((order, index) => (
-    //     <div key={index}>
-    //       <p>Buyer: {order.buyer_name}</p>
-    //       <p>Seller: {order.seller_name}</p>
-    //     </div>
-    //   ))}
-    // </div>
 
     <main className="px-4 py-2">
       <p>Orders</p>

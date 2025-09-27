@@ -18,21 +18,27 @@ const BrowseviaCate = () => {
       setCurrProd(arr);
     };
     fetchData();
-  }, [currCat,products]);
+  }, [currCat, products]);
 
   return (
-    <main className="flex flex-col gap-8">
-      {currProd
-        ? currProd.map((prod, ind) => (
-            <div key={ind}>
-              <p>Name : {prod.prod_name}</p>
-              <p>Category : {prod.prod_category}</p>
-              <p>Price : {prod.prod_price}</p>
-              <p>Remaining Quantity : {prod.prod_quantity}</p>
-              <p>Seller Name : {prod.Seller_name}</p>
+    <main className="grid grid-cols-4 gap-4 px-12 py-4">
+      {currProd ? (
+        currProd.map((prod, ind) => (
+          <div key={ind} className="border-2 border-solid px-8 py-4">
+            <p>Name : {prod.prod_name}</p>
+            <p>Category : {prod.prod_category}</p>
+            <p>Price : {prod.prod_price}</p>
+            <p>Remaining Quantity : {prod.prod_quantity}</p>
+            <p>Seller Name : {prod.Seller_name}</p>
+            <div className="flex gap-2">
+              <button className="border-2 border-solid px-2 py-1">Wishlist</button>
+              <button className="border-2 border-solid px-2 py-1">Add to Cart</button>
             </div>
-          ))
-        : <p></p>}
+          </div>
+        ))
+      ) : (
+        <p></p>
+      )}
     </main>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect, use } from "react";
 import { useFtm } from "../store/useFtm";
 import type { hashMap, Product } from "../types/product";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
 const BrowseFilter: React.FC = () => {
   const {
@@ -58,6 +59,15 @@ const BrowseFilter: React.FC = () => {
   const confirmOrder = () => {
     setCurrSelected(order);
   };
+
+  const addTowishlist = async(p_id : number) => {
+    try {
+      const data = await axios.post("http://localhost:3000/api/f2m/user/wishlist/add", { user_id: id, prod_id: p_id });
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   useEffect(() => {
     if (products.length === 0) return;
@@ -154,7 +164,7 @@ const BrowseFilter: React.FC = () => {
               </p>
               <div className="flex gap-4">
                 <button className="border-2 border-solid border-black">
-                  <p className="p-0.5">WishList</p>
+                  <p className="p-0.5" onClick={() => addTowishlist(prod.prod_id)}>WishList</p>
                 </button>
 
                 <button
