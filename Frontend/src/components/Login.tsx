@@ -104,7 +104,7 @@ const Login = () => {
       </form>
       <p>
         New Here ?{" "}
-        <span className="underline hover:cursor-pointer">Register</span> to
+        <span className="underline hover:cursor-pointer" onClick={()=>Navigate("/register")}>Register</span> to
         access F2M
       </p>
     </main>

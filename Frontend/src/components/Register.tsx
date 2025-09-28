@@ -152,7 +152,7 @@ const Register = () => {
       </form>
       <p>
         Already have an Account ?{" "}
-        <span className="underline hover:cursor-pointer">Login</span> to
+        <span className="underline hover:cursor-pointer" onClick={()=> Navigate("/login")}>Login</span> to
         regain access
       </p>
     </main>

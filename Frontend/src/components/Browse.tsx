@@ -51,10 +51,14 @@ const BrowseFilter: React.FC = () => {
     setData(filtered);
   };
 
-  const orderUpdate = (id: number) => {
-    setOrder((prev) => [...prev, id]);
-    console.log(order.length);
-  };
+const orderUpdate = (id: number) => {
+  setOrder((prev) => {
+    if (prev.includes(id)) {
+      return prev;
+    }
+    return [...prev, id];
+  });
+};
 
   const confirmOrder = () => {
     setCurrSelected(order);
@@ -185,7 +189,7 @@ const BrowseFilter: React.FC = () => {
                   onClick={() => orderUpdate(prod.prod_id)}
                   disabled={prod.prod_quantity > 0 ? false : true}
                 >
-                  <p className="p-0.5">Add to Cart</p>
+                  {prod.prod_quantity > 0 ? (<p className="p-0.5">Add to Cart</p>) : (<p className="p-0.5">Out of Stock</p>)}
                 </button>
               </div>
             </div>

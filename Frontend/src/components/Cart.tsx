@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from "react";
+import React, {useState } from "react";
 import { useFtm } from "../store/useFtm";
 
 const Cart = () => {
@@ -7,8 +7,10 @@ const Cart = () => {
 
   const addQuantity = (id: number) => {
     const arr = test_products[id];
-    arr[0].selected_quantity = arr[0].selected_quantity + 1;
-    arr[0].final_price = arr[0].prod_price * arr[0].selected_quantity;
+    if (arr[0].selected_quantity < arr[0].prod_quantity) {
+      arr[0].selected_quantity = arr[0].selected_quantity + 1;
+      arr[0].final_price = arr[0].prod_price * arr[0].selected_quantity;
+    }
 
     setTemp(arr[0].selected_quantity);
   };
