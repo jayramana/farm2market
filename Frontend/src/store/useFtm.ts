@@ -44,10 +44,11 @@ type ProductStore = {
   setCurrSelected: (numArray: number[]) => void;
   set_test_products: (proObj: hashMap) => void;
   addOrder: (order: Product[]) => void;
+  setUser: (user_id: number) => void;
 };
 
 export const useFtm = create<ProductStore>((set) => ({
-  id: 3,
+  id: 0,
   products: [],
   test_products: {},
   prod_categories: [],
@@ -191,4 +192,7 @@ export const useFtm = create<ProductStore>((set) => ({
     );
     console.log(request.data);
   },
+  setUser: (user_id: number) => {
+    set({ id: user_id });
+  }
 }));

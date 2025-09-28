@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route,Navigate } from "react-router-dom";
 import Home from "./components/Home";
 import Order from "./components/Orders";
 import Profile from "./components/Profile";
@@ -15,7 +15,8 @@ function App() {
   return (
     <main>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Navigate to='/register' replace/> } />
+        <Route path="/home" element={<Home />} />
         <Route path="/orders" element={<Order />} />
         <Route path="/browse" element={<BrowseFilter />} />
         <Route path="/profile" element={<Profile />} />

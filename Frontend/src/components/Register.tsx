@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [name, setName] = useState<string>("");
@@ -15,6 +16,8 @@ const Register = () => {
   const [passErr, setPassErr] = useState<boolean>(false);
   const [phoneErr, setPhoneerr] = useState<boolean>(false);
   const [formErr, setFormerr] = useState<boolean>(false);
+
+  const Navigate = useNavigate()
 
   const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
   const pwdRegex2 =
@@ -57,7 +60,8 @@ const Register = () => {
       const str_to_numb = parseInt(num);
       const new_User = await axios.post("http://localhost:3000/api/f2m/user/create", { user_name: name, user_email: email, user_enpass: pass, user_role: role, user_phone: str_to_numb, user_loc : loc })
       console.log(new_User);
-      console.log(name, email, pass,role,num,loc);
+      console.log(name, email, pass, role, num, loc);
+      Navigate("/login");
     } catch (err : any) {
       console.log(err.message);
     }

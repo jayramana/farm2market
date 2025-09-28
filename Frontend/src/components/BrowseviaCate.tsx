@@ -37,7 +37,7 @@ const BrowseviaCate = () => {
           </div>
         ))
       ) : (
-        <p></p>
+        <p>No categories found</p>
       )}
     </main>
   );

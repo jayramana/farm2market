@@ -60,14 +60,17 @@ const BrowseFilter: React.FC = () => {
     setCurrSelected(order);
   };
 
-  const addTowishlist = async(p_id : number) => {
+  const addTowishlist = async (p_id: number) => {
     try {
-      const data = await axios.post("http://localhost:3000/api/f2m/user/wishlist/add", { user_id: id, prod_id: p_id });
+      const data = await axios.post(
+        "http://localhost:3000/api/f2m/user/wishlist/add",
+        { user_id: id, prod_id: p_id }
+      );
       console.log(data);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     if (products.length === 0) return;
@@ -75,7 +78,12 @@ const BrowseFilter: React.FC = () => {
     const grouped = products.reduce<Record<number, Product[]>>((acc, item) => {
       const key = item.prod_id;
       if (!acc[key]) acc[key] = [];
-      const newObj  = { ...item, buyer_id: id, selected_quantity: 1, final_price : item.prod_price };
+      const newObj = {
+        ...item,
+        buyer_id: id,
+        selected_quantity: 1,
+        final_price: item.prod_price,
+      };
       acc[key].push(newObj);
       return acc;
     }, {});
@@ -143,7 +151,7 @@ const BrowseFilter: React.FC = () => {
             <div
               key={prod.prod_id}
               className="border p-4 rounded shadow-sm"
-              onClick={()=>redirect}
+              onClick={() => redirect}
             >
               <p>
                 <strong>Name:</strong> {prod.prod_name}
@@ -164,12 +172,18 @@ const BrowseFilter: React.FC = () => {
               </p>
               <div className="flex gap-4">
                 <button className="border-2 border-solid border-black">
-                  <p className="p-0.5" onClick={() => addTowishlist(prod.prod_id)}>WishList</p>
+                  <p
+                    className="p-0.5"
+                    onClick={() => addTowishlist(prod.prod_id)}
+                  >
+                    WishList
+                  </p>
                 </button>
 
                 <button
                   className="border-2 border-solid border-black"
                   onClick={() => orderUpdate(prod.prod_id)}
+                  disabled={prod.prod_quantity > 0 ? false : true}
                 >
                   <p className="p-0.5">Add to Cart</p>
                 </button>

@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useFtm } from "../store/useFtm";
 
 const Login = () => {
+  const Navigate = useNavigate()
+  const { id, setUser } = useFtm();
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [pass, setPass] = useState<string>("");
@@ -38,10 +42,11 @@ const Login = () => {
         throw new Error("All fields must be filled");
       }
       const loginCheck = await axios.post("http://localhost:3000/api/f2m/user/check", { user_name: name, user_email: email, user_enpass: pass });
-      console.log(loginCheck.data);
-
-      console.log(name, email, pass);
-    } catch (err) {
+      if (loginCheck.data.success) {
+        setUser(loginCheck.data.data.user_id);
+        Navigate("/home");
+      }
+    } catch (err : any) {
       console.log(err.message);
     }
   };

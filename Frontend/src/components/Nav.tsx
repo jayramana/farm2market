@@ -16,7 +16,7 @@ const Nav = () => {
   const Navigate = useNavigate();
 
   const Home = () => {
-    Navigate("/")
+    Navigate("/home")
   }
   const toOrders = () => {
     Navigate("/orders");
