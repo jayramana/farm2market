@@ -53,7 +53,7 @@ router.get("/product/users/details/:id", getUserdetails);
 router.post("/product/add", addProduct); //Ok
 router.put("/product/edit",editProdstats) // Ok
 
-router.post("/product/newOrder", newOrder); //Ok
+router.post("/product/order/new", newOrder); //Ok
 
 
 

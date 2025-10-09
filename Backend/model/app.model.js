@@ -204,52 +204,38 @@ const getNormieStats = async (user_id) => {
   }
 };
 const addOrder = async (
-  buy_id,
-  sell_id,
-  pid,
+  buyer_id,
+  seller_id,
+  prod_id,
   quantity,
-  description,
-  prod_name,
-  prod_price,
   final_price,
+  prod_price,
+  prod_name,
   buyer_name,
-  seller_name
+  Seller_name,
+  DESCRIPTION
 ) => {
   try {
     const [rows] = await db.query(
-      "SELECT prod_quantity from product where prod_id = ?",
-      [pid]
+      "INSERT INTO TRANSACTIONS(buyer_id,seller_id,prod_id,quantity,final_price,prod_price,prod_name,buyer_name,Seller_name,DESCRIPTION) Values(?,?,?,?,?,?,?,?,?,?)",
+      [
+        buyer_id,
+        seller_id,
+        prod_id,
+        quantity,
+        final_price,
+        prod_price,
+        prod_name,
+        buyer_name,
+        Seller_name,
+        DESCRIPTION,
+      ]
     );
-
-    const curr_quantity = rows[0]?.prod_quantity || 0;
-    if (curr_quantity < quantity) {
-      return { success: false, message: "Insufficient stock" };
-    }
-    if (curr_quantity >= quantity) {
-      await db.query(
-        "INSERT INTO transactions(buyer_id,seller_id,prod_id,quantity,prod_price,final_price,description,prod_name,buyer_name,seller_name)VALUES(?,?,?,?,?,?,?,?,?,?)",
-        [
-          buy_id,
-          sell_id,
-          pid,
-          quantity,
-          prod_price,
-          final_price,
-          description,
-          prod_name,
-          buyer_name,
-          seller_name,
-        ]
-      );
-
-      await db.query(
-        `UPDATE product set prod_quantity = prod_quantity - ? where prod_id = ?`,
-        [quantity, pid]
-      );
-    }
-    return { success: true };
-  } catch (err) {
-    return { success: false };
+    if (rows.affectedRows === 0)
+      throw new Error("Cannot Insert due to lack of Data");
+    return { success: true, status: "Ordered" };
+  } catch (error) {
+    return { success: false, status: error };
   }
 };
 
@@ -360,7 +346,10 @@ const addTowishlist = async (user_id, prod_id) => {
 
 const retrieveWishlist = async (id) => {
   try {
-    const [rows] = await db.query("Select w.wishlist_id,prod_name,prod_category,prod_price,prod_description,created_at,Seller_name from wishlist w join product p on w.prod_id = p.prod_id where w.user_id = ?",[id]);
+    const [rows] = await db.query(
+      "Select w.wishlist_id,prod_name,prod_category,prod_price,prod_description,created_at,Seller_name from wishlist w join product p on w.prod_id = p.prod_id where w.user_id = ?",
+      [id]
+    );
     if (rows.length == 0) {
       return rows.length;
     }
@@ -418,5 +407,5 @@ module.exports = {
   addTowishlist,
   retrieveWishlist,
   delete_one_wishlist,
-  delete_All_from_wishlist
+  delete_All_from_wishlist,
 };

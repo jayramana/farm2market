@@ -114,108 +114,15 @@ const getNormstats = async (req, res) => {
 
 const newOrder = async (req, res) => {
   try {
-    const payload = Array.isArray(req.body) ? req.body : [req.body];
-
-    if (!Array.isArray(payload) || payload.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "Invalid payload: expected a non-empty array" });
-    }
-
-    const orders = payload.map((o, index) => {
-      const buyer_id = parseInt(o?.buyer_id, 10);
-      const seller_id = parseInt(o?.user_id, 10);
-      const prod_id = parseInt(o?.prod_id, 10);
-      const quantity = parseInt(o?.selected_quantity, 10);
-      const description = o?.prod_description;
-      const prod_name = o?.prod_name;
-      const prod_price = Number(o?.prod_price);
-      const final_price = Number(o?.final_price);
-      const buyer_name = o?.buyer_name;
-      const seller_name = o?.Seller_name;
-
-      const errors = [];
-      if (
-        [buyer_id, seller_id, prod_id, quantity, prod_price, final_price].some(
-          Number.isNaN
-        )
-      ) {
-        errors.push("buyer_id, seller_id, prod_id, quantity must be numbers");
-      }
-      if (
-        !Number.isNaN(quantity) &&
-        (!Number.isInteger(quantity) || quantity <= 0)
-      ) {
-        errors.push("quantity must be a positive integer");
-      }
-
-      return {
-        index,
-        buyer_id,
-        seller_id,
-        prod_id,
-        quantity,
-        description,
-        prod_name,
-        prod_price,
-        final_price,
-        buyer_name,
-        seller_name,
-        errors,
-      };
-    });
-
-    const invalid = orders.filter((o) => o.errors.length);
-    if (invalid.length) {
-      console.log(invalid.forEach((item) => console.log(item)));
-      return res.status(400).json({
-        message: "Invalid parameters in one or more orders",
-        invalid: invalid.map(({ index, errors }) => ({ index, errors })),
-      });
-    }
-
-    const results = [];
-    for (const o of orders) {
-      try {
-        const r = await User.addOrder(
-          o.buyer_id,
-          o.seller_id,
-          o.prod_id,
-          o.quantity,
-          o.description,
-          o.prod_name,
-          o.prod_price,
-          o.final_price,
-          o.buyer_name,
-          o.seller_name
-        );
-        results.push({
-          index: o.index,
-          success: !!r?.success,
-          message: r?.message || (r?.success ? "Created" : "Failed"),
-        });
-      } catch (e) {
-        console.log(e.message);
-        results.push({
-          index: o.index,
-          success: false,
-          message: e?.message || "Unhandled error",
-        });
-      }
-    }
-
-    const successes = results.filter((r) => r.success).length;
-    const failures = results.length - successes;
-
-    return res.status(failures ? 207 : 201).json({
-      message: failures ? "Partially processed" : "All orders created",
-      counts: { total: results.length, successes, failures },
-      results,
-    });
+    const { buyer_id, seller_id, prod_id, quantity, final_price, prod_price, prod_name, buyer_name, Seller_name, DESCRIPTION } = req.body;
+    const fetchData = await User.addOrder(buyer_id, seller_id, prod_id, quantity, final_price, prod_price, prod_name, buyer_name, Seller_name, DESCRIPTION);
+    return res.status(200).json(fetchData);
+    
   } catch (error) {
-    return res.status(500).json({ message: "Failure", error: error.message });
+    return res.status(500).json(error.message);
   }
-};
+}
+
 
 // Edit Product Details
 const editProdstats = async (req, res) => {
