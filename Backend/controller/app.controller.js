@@ -125,7 +125,6 @@ const newOrder = async (req, res) => {
 
 
 
-};
 
 // Edit Product Details
 const editProdstats = async (req, res) => {
