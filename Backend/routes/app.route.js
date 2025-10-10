@@ -15,13 +15,13 @@ const {
   allLocations,
   allSellers,
   getUserdetails,
-  checkUser,
-  create_User,
   addto_Wishlist,
   retrieve_from_wishList,
   delete_from_wishlist_one,
   delete_from_wishlist_all
 } = require("../controller/app.controller.js");
+
+const { create_User, checkUser } = require("../controller/auth.controller.js");
 
 // Check the app.model.js before finalizing the project
 

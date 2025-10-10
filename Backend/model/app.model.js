@@ -31,7 +31,7 @@ const checkUserExists = async (name, email) => {
     [name, email]
   );
   if (rows.length == 0) throw new Error("Not Found!");
-  return rows[0];
+  return rows;
 };
 
 const getAllUsers = async () => {

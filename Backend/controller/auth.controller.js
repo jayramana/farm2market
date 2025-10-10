@@ -33,15 +33,21 @@ const checkUser = async (req, res) => {
     const email = req.body.user_email;
     const pass = req.body.user_enpass;
 
-    const fetchData = await User.checkUserExists(name, email);
+    const [fetchData] = await User.checkUserExists(name, email);
     if (fetchData.length === 0)
-          return res.status(400).json({ success: false, data: "None Found!!" });
+          return res.status(400).json({ success: false, message: "None Found!!" });
       
-    const curr_User = fetchData[0];
+    
+
+    const compare = await bcrypt.compare(pass, fetchData.user_enpass);
+
+    if (!compare) {
+      return res.status(401).json({success : false, message : "Wrong Credentials"})
+    }
 
     return res.status(200).json({ success: true, data: fetchData });
   } catch (error) {
-    return res.status(500).json({ success: false, data: error });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
