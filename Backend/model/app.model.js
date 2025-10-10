@@ -25,10 +25,10 @@ const createUser = async (
   return rows;
 };
 
-const checkUserExists = async (name, email, password) => {
+const checkUserExists = async (name, email) => {
   const [rows] = await db.query(
-    "SELECT * FROM USERS WHERE user_name = ? AND user_email = ? AND user_enpass = ?",
-    [name, email, password]
+    "SELECT * FROM USERS WHERE user_name = ? AND user_email = ?",
+    [name, email]
   );
   if (rows.length == 0) throw new Error("Not Found!");
   return rows[0];
